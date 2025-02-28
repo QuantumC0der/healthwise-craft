@@ -227,11 +227,21 @@ const MainContent = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
                 className="text-3xl md:text-4xl font-display font-medium mb-6"
               >
                 Ready to Find Your Perfect Supplements?
               </motion.h2>
+              <div id="app-status" className="py-2 px-4 bg-green-100 text-green-800 rounded-md mb-4 hidden">
+                App loaded successfully. If you're seeing a blank page, please refresh.
+              </div>
+              <script dangerouslySetInnerHTML={{ __html: `
+                // Make sure the app is loaded
+                setTimeout(() => {
+                  const status = document.getElementById('app-status');
+                  if (status) status.classList.remove('hidden');
+                }, 2000);
+              `}} />
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
