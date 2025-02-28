@@ -39,25 +39,58 @@ const categories = [
 const SupplementSummary = () => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   
+  // Card animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }),
+    hover: {
+      y: -8,
+      boxShadow: "0 15px 30px rgba(0,0,0,0.1)",
+      transition: {
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }
+  };
+  
   return (
-    <div className="py-16 bg-sage-50">
+    <div className="py-20 bg-sage-50">
       <div className="container-custom">
         <div className="text-center mb-16">
-          <motion.h2 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+            className="inline-flex items-center justify-center bg-primary/10 text-primary rounded-full px-4 py-1.5 mb-4"
+          >
+            <span className="text-sm font-medium">Our Solutions</span>
+          </motion.div>
+          
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl md:text-4xl font-display font-medium mb-4"
           >
             Personalized Supplements for Every Need
           </motion.h2>
+          
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-muted-foreground max-w-2xl mx-auto"
+            className="text-muted-foreground max-w-2xl mx-auto font-body"
           >
             Our recommendations are tailored to your unique health profile, goals, and preferences.
             We analyze thousands of high-quality supplements to find the perfect match for you.
@@ -68,25 +101,27 @@ const SupplementSummary = () => {
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial="hidden"
+              whileInView="visible"
+              whileHover="hover"
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              variants={cardVariants}
+              custom={index}
               className="relative group"
               onMouseEnter={() => setHoveredId(category.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <div 
-                className={`relative overflow-hidden rounded-xl bg-white border border-sage-100 transition-all duration-300 ${
-                  hoveredId === category.id ? 'shadow-lg' : 'shadow-md'
-                }`}
+                className="relative overflow-hidden rounded-xl bg-white border border-sage-100 transition-all duration-300 shadow-md"
               >
-                <div className="h-48 relative">
+                <div className="h-48 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                  <img
+                  <motion.img
                     src={category.image}
                     alt={category.name}
                     className="w-full h-full object-cover"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.5 }}
                   />
                 </div>
                 
@@ -95,13 +130,18 @@ const SupplementSummary = () => {
                     {category.count} Supplements
                   </div>
                   
-                  <h3 className="text-xl font-medium mb-2">{category.name}</h3>
-                  <p className="text-muted-foreground mb-4">{category.description}</p>
+                  <h3 className="text-xl font-display font-medium mb-2">{category.name}</h3>
+                  <p className="text-muted-foreground mb-4 font-body">{category.description}</p>
                   
-                  <Button variant="outline" className="group">
-                    <span>Explore</span>
-                    <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                  </Button>
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Button variant="outline" className="group">
+                      <span>Explore</span>
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>

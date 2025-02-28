@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container-custom py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-medium mb-4">HealthWise</h3>
+            <h3 className="text-lg font-display font-medium mb-4">HealthWise</h3>
             <p className="text-muted-foreground text-sm mb-4">
               Personalized supplement recommendations based on your unique health profile.
             </p>
@@ -46,7 +46,7 @@ const Footer = () => {
         
         <div className="border-t border-sage-100 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © {new Date().getFullYear()} HealthWise. All rights reserved.
+            © {new Date().getFullYear()} HealthWise. All rights reserved. <span className="block md:inline opacity-70 font-display italic mt-1 md:mt-0 md:ml-1">A Rishul Chanana Production</span>
           </p>
           
           <div className="flex space-x-6">
