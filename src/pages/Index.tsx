@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
@@ -25,12 +26,12 @@ const Index = () => {
 };
 
 const MainContent = () => {
-  const { userData, isLoading, updateUser } = useUser();
+  const { userData, isLoading } = useUser();
   const [currentView, setCurrentView] = useState<
-    'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile' | 'account'
+    'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile'
   >('home');
   const [recommendations, setRecommendations] = useState([]);
-
+  
   useEffect(() => {
     if (!isLoading) {
       if (userData?.completedQuestionnaire) {
@@ -41,7 +42,7 @@ const MainContent = () => {
           userData.allergies
         );
         setRecommendations(userRecs);
-
+        
         if (currentView === 'home') {
         } else {
           setCurrentView('recommendations');
@@ -51,12 +52,12 @@ const MainContent = () => {
       }
     }
   }, [userData, isLoading, currentView]);
-
+  
   const handleStartQuestionnaire = () => {
     setCurrentView('start');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
+  
   const handleQuestionnaireComplete = () => {
     const userRecs = getRecommendedSupplements(
       userData.healthGoals,
@@ -66,44 +67,28 @@ const MainContent = () => {
     );
     setRecommendations(userRecs);
     setCurrentView('recommendations');
-
+    
     toast({
       title: "Assessment Complete!",
       description: "We've generated personalized supplement recommendations based on your health profile.",
       duration: 5000,
     });
-
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
+  
   const handleRetakeQuestionnaire = () => {
-    // Reset questionnaire data in context
-    updateUser({
-      ...userData,
-      completedQuestionnaire: false,
-      healthGoals: [],
-      dietaryPreferences: [],
-      healthConditions: [],
-      allergies: []
-    });
-
-    setCurrentView('start');
+    setCurrentView('questionnaire');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    toast({
-      title: "Questionnaire Reset",
-      description: "You can now retake the health assessment",
-      duration: 3000,
-    });
   };
-
+  
   const scrollToAssessment = () => {
     const assessmentElement = document.getElementById('assessment-section');
     if (assessmentElement) {
       assessmentElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -111,17 +96,17 @@ const MainContent = () => {
       </div>
     );
   }
-
+  
   if (currentView === 'home') {
     return (
       <div className="min-h-screen flex flex-col bg-sage-50">
         <Header />
-
+        
         <main className="flex-grow">
           <Hero />
-
+          
           <SupplementSummary />
-
+          
           <div id="assessment-section" className="py-20 bg-white">
             <div className="container-custom">
               <div className="text-center mb-12">
@@ -134,7 +119,7 @@ const MainContent = () => {
                 >
                   <span className="text-sm font-medium">Start Your Journey</span>
                 </motion.div>
-
+                
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -144,7 +129,7 @@ const MainContent = () => {
                 >
                   Take the Health Assessment
                 </motion.h2>
-
+                
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -155,7 +140,7 @@ const MainContent = () => {
                   Answer a few questions about your health, lifestyle, and goals to receive 
                   personalized supplement recommendations tailored just for you.
                 </motion.p>
-
+                
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -171,7 +156,7 @@ const MainContent = () => {
                   </Button>
                 </motion.div>
               </div>
-
+              
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -186,7 +171,7 @@ const MainContent = () => {
                     className="w-full h-auto"
                   />
                 </div>
-
+                
                 <div className="absolute top-6 -right-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 max-w-xs transform rotate-2">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -200,7 +185,7 @@ const MainContent = () => {
                     </div>
                   </div>
                 </div>
-
+                
                 <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 transform -rotate-2">
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
@@ -216,33 +201,23 @@ const MainContent = () => {
               </motion.div>
             </div>
           </div>
-
+          
           <Testimonials />
-
+          
           <FAQ />
-
+          
           <div className="py-20 bg-sage-50">
             <div className="container-custom text-center">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+                transition={{ duration: 0.5 }}
                 className="text-3xl md:text-4xl font-display font-medium mb-6"
               >
                 Ready to Find Your Perfect Supplements?
               </motion.h2>
-              <div id="app-status" className="py-2 px-4 bg-green-100 text-green-800 rounded-md mb-4 hidden">
-                App loaded successfully. If you're seeing a blank page, please refresh.
-              </div>
-              <script dangerouslySetInnerHTML={{ __html: `
-                // Make sure the app is loaded
-                setTimeout(() => {
-                  const status = document.getElementById('app-status');
-                  if (status) status.classList.remove('hidden');
-                }, 2000);
-              `}} />
-
+              
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -253,7 +228,7 @@ const MainContent = () => {
                 Take the first step toward optimized health with personalized recommendations 
                 based on your unique needs and goals.
               </motion.p>
-
+              
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -267,7 +242,7 @@ const MainContent = () => {
                 >
                   Start Assessment
                 </Button>
-
+                
                 <Button 
                   variant="outline" 
                   size="lg"
@@ -281,16 +256,16 @@ const MainContent = () => {
             </div>
           </div>
         </main>
-
+        
         <Footer />
       </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen flex flex-col bg-sage-50">
       <Header />
-
+      
       <main className="flex-grow pt-24">
         <AnimatePresence mode="wait">
           {currentView === 'start' && (
@@ -304,7 +279,7 @@ const MainContent = () => {
               <QuestionnaireStart onStart={() => setCurrentView('questionnaire')} />
             </motion.div>
           )}
-
+          
           {currentView === 'questionnaire' && (
             <motion.div
               key="questionnaire-view"
@@ -319,7 +294,7 @@ const MainContent = () => {
               />
             </motion.div>
           )}
-
+          
           {currentView === 'recommendations' && (
             <motion.div
               key="recommendations-view"
@@ -338,7 +313,7 @@ const MainContent = () => {
                     Based on your health profile and goals, we recommend these supplements for you.
                   </p>
                 </div>
-
+                
                 <div className="flex space-x-3">
                   <Button 
                     variant="outline" 
@@ -349,7 +324,7 @@ const MainContent = () => {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </Button>
-
+                  
                   <Button 
                     variant="secondary" 
                     size="sm"
@@ -361,7 +336,7 @@ const MainContent = () => {
                   </Button>
                 </div>
               </div>
-
+              
               <div className="space-y-6">
                 {recommendations.map((supplement, index) => (
                   <RecommendationCard
@@ -370,7 +345,7 @@ const MainContent = () => {
                     index={index}
                   />
                 ))}
-
+                
                 {recommendations.length === 0 && (
                   <div className="bg-white rounded-xl shadow-md border border-sage-100 p-8 text-center">
                     <p className="text-lg text-muted-foreground">
@@ -385,7 +360,7 @@ const MainContent = () => {
                   </div>
                 )}
               </div>
-
+              
               <div className="mt-12 text-center">
                 <Button 
                   variant="outline"
@@ -398,7 +373,7 @@ const MainContent = () => {
               </div>
             </motion.div>
           )}
-
+          
           {currentView === 'profile' && (
             <motion.div
               key="profile-view"
@@ -416,17 +391,13 @@ const MainContent = () => {
                   Back to Recommendations
                 </button>
               </div>
-
+              
               <UserProfile />
             </motion.div>
           )}
-
-          {currentView === 'account' && (
-            <UserAccount onBack={() => setCurrentView(userData.completedQuestionnaire ? 'recommendations' : 'home')} />
-          )}
         </AnimatePresence>
       </main>
-
+      
       <Footer />
     </div>
   );
