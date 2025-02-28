@@ -54,10 +54,10 @@ const Footer = () => {
               className="text-2xl font-display mb-4 text-primary"
               whileHover={{ scale: 1.05 }}
             >
-              Health<span className="text-secondary">Wise</span>
+              MySupplement<span className="text-secondary">Match</span>
             </motion.h3>
             <p className="text-foreground text-md mb-4 font-body">
-              We find the perfect super vitamins for your awesome body! It's like magic, but it's science! ✨
+              We find the perfect supplements for your unique needs! It's like magic, but it's science! ✨
             </p>
           </div>
           
