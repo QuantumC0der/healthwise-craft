@@ -86,6 +86,8 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        display: ["Fredoka One", "cursive"],
+        body: ["Quicksand", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
