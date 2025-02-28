@@ -5,26 +5,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 180 20% 99%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 266 71% 58%; /* Playful purple */
+    --primary: 266 80% 58%; /* Enhanced purple */
     --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 46 100% 70%; /* Sunny yellow */
+    --secondary: 46 100% 65%; /* Warmer yellow */
     --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
+    --muted: 210 40% 96.1%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 168 100% 82%; /* Mint */
+    --accent: 168 100% 76%; /* Brighter mint */
     --accent-foreground: 240 5.9% 10%;
-    --destructive: 345 75% 63%; /* Soft red */
+    --destructive: 345 82% 63%; /* Vibrant red */
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 266 71% 58%;
-    --radius: 1rem; /* Rounder corners */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 266 80% 58%;
+    --radius: 1.2rem; /* Even rounder corners */
   }
 
   .dark {
@@ -97,6 +97,27 @@
     animation: float 3s ease-in-out infinite;
   }
   
+  .animate-slide-up {
+    animation: slideInUp 0.5s ease-out forwards;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out forwards;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(90deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0.8) 50%, 
+      rgba(255,255,255,0) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
   .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
@@ -137,6 +158,57 @@
   
   .bg-orange-soft {
     background-color: #ffedd5;
+  }
+  
+  /* Glass effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Card styles */
+  .card-fancy {
+    @apply rounded-xl bg-white p-6 shadow-lg transition-all duration-300;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card-fancy:hover {
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+  }
+  
+  /* Button styles */
+  .btn-fancy {
+    @apply inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200 
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+    disabled:opacity-50 disabled:pointer-events-none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-fancy::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.6s;
+  }
+  
+  .btn-fancy:hover::after {
+    left: 100%;
   }
   
   .gradient-purple-pink {
@@ -211,6 +283,66 @@
   50% { transform: rotate(3deg); }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 html, body {
   scroll-behavior: smooth;
+}
+
+/* Improved scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.7);
 }
