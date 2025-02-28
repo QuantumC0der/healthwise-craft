@@ -1,26 +1,33 @@
 
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
-import Header from './components/Header';
-import Index from './pages/Index';
-import './App.css';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/context/ThemeContext";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  return (
-    <ThemeProvider defaultTheme="system" storageKey="app-theme">
-      <Router>
-        <div className="app min-h-screen bg-background text-foreground">
-          <Header />
-          <main className="container mx-auto px-4 py-8">
+const queryClient = new QueryClient();
+
+const App = () => (
+  <ThemeProvider defaultTheme="light">
+    <div className="font-body">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
-          </main>
-        </div>
-      </Router>
-    </ThemeProvider>
-  );
-}
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </div>
+  </ThemeProvider>
+);
 
 export default App;
