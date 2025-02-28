@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Edit2, Save, User, Calendar, Activity, Heart } from 'lucide-react';
@@ -13,30 +14,30 @@ const UserProfile = () => {
     age: userData.age,
     gender: userData.gender
   });
-
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
+  
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     // Ensure age is a number
     const updatedData = {
       ...formData,
       age: Number(formData.age)
     };
-
+    
     updateUser(updatedData);
     setIsEditing(false);
   };
-
+  
   return (
     <div className="container-custom py-8">
       <motion.div
@@ -54,14 +55,14 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-
+          
           <div className="pt-20 pb-8 px-6 md:px-10">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h1 className="text-2xl font-medium">{userData.name}</h1>
                 <p className="text-muted-foreground">{userData.email}</p>
               </div>
-
+              
               <Button
                 variant="outline"
                 size="sm"
@@ -81,7 +82,7 @@ const UserProfile = () => {
                 )}
               </Button>
             </div>
-
+            
             {isEditing ? (
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -95,11 +96,11 @@ const UserProfile = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="input-field w-full" // Added w-full for responsiveness
+                      className="input-field"
                       required
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-1">
                       Email Address
@@ -110,11 +111,11 @@ const UserProfile = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="input-field w-full" // Added w-full for responsiveness
+                      className="input-field"
                       required
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="age" className="block text-sm font-medium mb-1">
                       Age
@@ -127,11 +128,11 @@ const UserProfile = () => {
                       max="120"
                       value={formData.age}
                       onChange={handleInputChange}
-                      className="input-field w-full" // Added w-full for responsiveness
+                      className="input-field"
                       required
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="gender" className="block text-sm font-medium mb-1">
                       Gender
@@ -141,7 +142,7 @@ const UserProfile = () => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleSelectChange}
-                      className="input-field w-full" // Added w-full for responsiveness
+                      className="input-field"
                       required
                     >
                       <option value="">Select gender</option>
@@ -152,7 +153,7 @@ const UserProfile = () => {
                     </select>
                   </div>
                 </div>
-
+                
                 <div className="flex justify-end">
                   <Button 
                     type="submit"
@@ -165,7 +166,7 @@ const UserProfile = () => {
               </form>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8"> {/* Modified to improve responsiveness */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                   <div className="bg-sage-50 rounded-lg p-4">
                     <div className="flex items-center mb-2">
                       <Calendar className="w-5 h-5 text-primary mr-2" />
@@ -173,7 +174,7 @@ const UserProfile = () => {
                     </div>
                     <p>{userData.age} years</p>
                   </div>
-
+                  
                   <div className="bg-sage-50 rounded-lg p-4">
                     <div className="flex items-center mb-2">
                       <User className="w-5 h-5 text-primary mr-2" />
@@ -181,7 +182,7 @@ const UserProfile = () => {
                     </div>
                     <p className="capitalize">{userData.gender || "Not specified"}</p>
                   </div>
-
+                  
                   <div className="bg-sage-50 rounded-lg p-4">
                     <div className="flex items-center mb-2">
                       <Activity className="w-5 h-5 text-primary mr-2" />
@@ -190,14 +191,14 @@ const UserProfile = () => {
                     <p>{userData.completedQuestionnaire ? "Completed" : "Not completed"}</p>
                   </div>
                 </div>
-
+                
                 <div className="space-y-8">
                   <div>
                     <div className="flex items-center mb-4">
                       <Heart className="w-5 h-5 text-primary mr-2" />
                       <h3 className="text-lg font-medium">Health Goals</h3>
                     </div>
-
+                    
                     {userData.healthGoals && userData.healthGoals.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {userData.healthGoals.map(goal => (
@@ -210,10 +211,10 @@ const UserProfile = () => {
                       <p className="text-muted-foreground">No health goals specified.</p>
                     )}
                   </div>
-
+                  
                   <div>
                     <h3 className="text-lg font-medium mb-4">Dietary Preferences</h3>
-
+                    
                     {userData.dietaryPreferences && userData.dietaryPreferences.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {userData.dietaryPreferences.map(pref => (
@@ -226,10 +227,10 @@ const UserProfile = () => {
                       <p className="text-muted-foreground">No dietary preferences specified.</p>
                     )}
                   </div>
-
+                  
                   <div>
                     <h3 className="text-lg font-medium mb-4">Health Conditions</h3>
-
+                    
                     {userData.healthConditions && userData.healthConditions.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {userData.healthConditions.map(condition => (
@@ -242,10 +243,10 @@ const UserProfile = () => {
                       <p className="text-muted-foreground">No health conditions specified.</p>
                     )}
                   </div>
-
+                  
                   <div>
                     <h3 className="text-lg font-medium mb-4">Allergies</h3>
-
+                    
                     {userData.allergies && userData.allergies.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
                         {userData.allergies.map(allergy => (

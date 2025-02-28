@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -41,11 +42,11 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-to-b from-purple-soft to-white relative overflow-hidden rounded-t-3xl">
       <div className="absolute top-0 left-0 w-full h-6 bg-primary rounded-t-3xl"></div>
-
+      
       {/* Fun shapes */}
       <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-soft rounded-full opacity-80"></div>
       <div className="absolute bottom-40 left-10 w-16 h-16 bg-green-soft rounded-full opacity-80"></div>
-
+      
       <div className="container-custom pt-16 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -59,7 +60,7 @@ const Footer = () => {
               We find the perfect supplements for your unique needs! It's like magic, but it's science! ✨
             </p>
           </div>
-
+          
           {footerItems.map((section) => (
             <div key={section.title}>
               <h4 className="font-display text-lg mb-4 text-primary">{section.title}</h4>
@@ -78,15 +79,15 @@ const Footer = () => {
             </div>
           ))}
         </div>
-
-        <div className="border-t border-primary/20 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-md text-foreground mb-4 sm:mb-0 font-body">
-            © {new Date().getFullYear()} MySupplementMatch. All rights reserved. 
-            <span className="block sm:inline font-display italic text-primary rotate-2 inline-block mt-1 sm:mt-0 sm:ml-1">
+        
+        <div className="border-t border-primary/20 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-md text-foreground mb-4 md:mb-0 font-body">
+            © {new Date().getFullYear()} HealthWise. All rights reserved. 
+            <span className="block md:inline font-display italic text-primary rotate-2 inline-block mt-1 md:mt-0 md:ml-1">
               A Rishul Chanana Production
             </span>
           </p>
-
+          
           <div className="flex space-x-4">
             {socialItems.map((item) => (
               <a 
