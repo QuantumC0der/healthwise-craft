@@ -40,15 +40,17 @@ export function Toast({
   return (
     <div
       className={cn(
-        "rounded-lg shadow-lg p-4 flex items-start gap-3 max-w-sm bg-white border",
-        variant === "destructive" ? "border-red-500" : "border-gray-200",
+        "rounded-2xl shadow-lg p-4 flex items-start gap-3 max-w-sm border-2",
+        variant === "destructive" 
+          ? "bg-pink-soft border-destructive" 
+          : "bg-gradient-to-r from-blue-soft to-purple-soft border-primary/20",
         className
       )}
       {...props}
     >
       <div className="flex-1">
         {title && (
-          <ToastTitle className={variant === "destructive" ? "text-red-500" : ""}>
+          <ToastTitle className={variant === "destructive" ? "text-destructive" : "text-primary"}>
             {title}
           </ToastTitle>
         )}
@@ -89,7 +91,7 @@ export function ToastTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("font-medium", className)}
+      className={cn("font-display text-lg", className)}
       {...props}
     >
       {children}
@@ -104,7 +106,7 @@ export function ToastDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-sm text-muted-foreground mt-1", className)}
+      className={cn("text-sm font-body mt-1", className)}
       {...props}
     >
       {children}
@@ -119,11 +121,11 @@ export function ToastClose({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={cn("text-muted-foreground hover:text-foreground", className)}
+      className={cn("text-primary hover:text-primary/70 hover:scale-110 transition-all", className)}
       onClick={onClick}
       {...props}
     >
-      <X className="h-4 w-4" />
+      <X className="h-5 w-5" />
     </button>
   );
 }

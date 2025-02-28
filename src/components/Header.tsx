@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, ChevronDown } from 'lucide-react';
+import { Menu, X, User, ChevronDown, Sparkles } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,15 +23,17 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: "How It Works", link: "#" },
-    { name: "Supplements", link: "#" },
-    { name: "Science", link: "#" },
-    { name: "About Us", link: "#" },
+    { name: "How It Works", link: "#", emoji: "🧩" },
+    { name: "Supplements", link: "#", emoji: "💊" },
+    { name: "Science", link: "#", emoji: "🔬" },
+    { name: "About Us", link: "#", emoji: "👋" },
   ];
 
   return (
     <header className={`fixed w-full z-50 transition-all duration-300 ${
-      scrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-4'
+      scrolled 
+        ? 'bg-white shadow-lg py-2 rounded-b-3xl' 
+        : 'bg-transparent py-4'
     }`}>
       <div className="container-custom">
         <div className="flex items-center justify-between">
@@ -41,12 +43,23 @@ const Header = () => {
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <div className="text-xl font-display font-medium">
-              <span className="text-primary">Health</span>Wise
-            </div>
+            <motion.div 
+              className="text-2xl font-display font-medium relative"
+              whileHover={{ scale: 1.05 }}
+            >
+              <span className="text-primary">Health</span>
+              <span className="text-secondary">Wise</span>
+              <motion.div 
+                className="absolute -right-6 -top-3"
+                animate={{ rotate: [0, 20, 0] }}
+                transition={{ repeat: Infinity, duration: 3 }}
+              >
+                <Sparkles className="w-5 h-5 text-yellow-400" />
+              </motion.div>
+            </motion.div>
           </motion.div>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item, index) => (
               <motion.a 
                 key={item.name}
@@ -54,10 +67,13 @@ const Header = () => {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
-                className="text-sm font-medium relative group"
+                className="text-md font-body font-bold px-4 py-1.5 rounded-full relative group hover:text-primary transition-colors"
+                whileHover={{ 
+                  scale: 1.05,
+                  backgroundColor: "rgba(241, 211, 255, 0.3)"
+                }}
               >
-                {item.name}
-                <span className="absolute left-0 bottom-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+                <span className="mr-1">{item.emoji}</span> {item.name}
               </motion.a>
             ))}
           </nav>
@@ -70,23 +86,22 @@ const Header = () => {
           >
             <motion.button 
               whileHover={{ scale: 1.05 }}
-              className="hidden md:flex items-center text-sm font-medium hover:text-primary transition-colors"
+              className="hidden md:flex items-center text-md font-body font-bold bg-primary/10 px-4 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
             >
-              <User className="w-4 h-4 mr-1" />
-              Account
-              <ChevronDown className="w-3 h-3 ml-1" />
+              <User className="w-4 h-4 mr-2" />
+              My Account
             </motion.button>
             
             <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="md:hidden"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="md:hidden bg-primary text-white p-2 rounded-full"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               )}
             </motion.button>
           </motion.div>
@@ -100,9 +115,9 @@ const Header = () => {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-t"
+            className="md:hidden bg-white border-t rounded-b-3xl overflow-hidden shadow-lg"
           >
-            <div className="container-custom py-4">
+            <div className="container-custom py-6">
               <nav className="flex flex-col space-y-4">
                 {navItems.map((item, index) => (
                   <motion.a 
@@ -111,9 +126,9 @@ const Header = () => {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.2, delay: 0.05 * index }}
-                    className="text-sm font-medium hover:text-primary transition-colors"
+                    className="text-md font-body font-bold hover:text-primary transition-colors px-4 py-2 rounded-full"
                   >
-                    {item.name}
+                    <span className="mr-2">{item.emoji}</span> {item.name}
                   </motion.a>
                 ))}
                 <motion.a 
@@ -121,10 +136,10 @@ const Header = () => {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2, delay: 0.25 }}
-                  className="text-sm font-medium hover:text-primary transition-colors flex items-center"
+                  className="text-md font-body font-bold hover:text-primary transition-colors px-4 py-2 rounded-full flex items-center"
                 >
-                  <User className="w-4 h-4 mr-1" />
-                  Account
+                  <User className="w-4 h-4 mr-2" />
+                  My Account
                 </motion.a>
               </nav>
             </div>

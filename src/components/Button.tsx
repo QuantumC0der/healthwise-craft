@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline';
@@ -19,18 +19,18 @@ const Button = ({
   loading,
   ...props
 }: ButtonProps) => {
-  const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+  const baseStyles = 'inline-flex items-center justify-center font-bold font-body transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
   
   const variants = {
-    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-    outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+    primary: 'bg-primary text-white hover:bg-primary/90 shadow-md active:scale-95',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md active:scale-95',
+    outline: 'border-2 border-input bg-background hover:bg-accent/30 hover:text-accent-foreground active:scale-95',
   };
   
   const sizes = {
-    sm: 'h-9 px-3 text-sm',
-    md: 'h-10 px-4 py-2',
-    lg: 'h-11 px-8',
+    sm: 'h-9 px-4 text-sm rounded-xl',
+    md: 'h-10 px-5 py-2 rounded-xl',
+    lg: 'h-12 px-8 text-lg rounded-xl',
   };
 
   return (
@@ -47,7 +47,7 @@ const Button = ({
       {loading ? (
         <>
           <svg 
-            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" 
+            className="animate-spin -ml-1 mr-2 h-5 w-5 text-current" 
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24"
