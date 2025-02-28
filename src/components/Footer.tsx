@@ -1,6 +1,4 @@
-
-import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const Footer = () => {
   const socialItems = [
@@ -40,36 +38,42 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-b from-purple-soft to-white relative overflow-hidden rounded-t-3xl">
-      <div className="absolute top-0 left-0 w-full h-6 bg-primary rounded-t-3xl"></div>
-      
-      {/* Fun shapes */}
-      <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-soft rounded-full opacity-80"></div>
-      <div className="absolute bottom-40 left-10 w-16 h-16 bg-green-soft rounded-full opacity-80"></div>
-      
-      <div className="container-custom pt-16 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <motion.h3 
-              className="text-2xl font-display mb-4 text-primary"
-              whileHover={{ scale: 1.05 }}
-            >
-              MySupplement<span className="text-secondary">Match</span>
-            </motion.h3>
-            <p className="text-foreground text-md mb-4 font-body">
-              We find the perfect supplements for your unique needs! It's like magic, but it's science! ✨
+    <footer className="bg-muted/30 pt-16 pb-8">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand section */}
+          <div className="space-y-6">
+            <div className="text-2xl font-display font-medium">
+              <span className="text-primary">MySupplement</span>
+              <span className="text-secondary">Match</span>
+            </div>
+            <p className="text-muted-foreground max-w-xs">
+              Finding your perfect supplement match based on real science, real results, and your unique body.
             </p>
+            <div className="flex space-x-4">
+              {socialItems.map((item, index) => (
+                <motion.a
+                  key={index}
+                  href={item.link}
+                  whileHover={{ scale: 1.1 }}
+                  className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
+                >
+                  <span>{item.icon}</span>
+                </motion.a>
+              ))}
+            </div>
           </div>
-          
-          {footerItems.map((section) => (
-            <div key={section.title}>
-              <h4 className="font-display text-lg mb-4 text-primary">{section.title}</h4>
+
+          {/* Footer links */}
+          {footerItems.map((section, index) => (
+            <div key={index} className="space-y-4">
+              <h3 className="text-lg font-display text-foreground">{section.title}</h3>
               <ul className="space-y-2">
-                {section.links.map((link) => (
-                  <li key={link.name}>
+                {section.links.map((link, linkIndex) => (
+                  <li key={linkIndex}>
                     <a 
                       href={link.link} 
-                      className="text-md font-body hover:text-primary transition-colors inline-block hover:translate-x-1 transition-transform"
+                      className="text-muted-foreground hover:text-primary transition-colors"
                     >
                       {link.name}
                     </a>
@@ -79,27 +83,9 @@ const Footer = () => {
             </div>
           ))}
         </div>
-        
-        <div className="border-t border-primary/20 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-md text-foreground mb-4 md:mb-0 font-body">
-            © {new Date().getFullYear()} HealthWise. All rights reserved. 
-            <span className="block md:inline font-display italic text-primary rotate-2 inline-block mt-1 md:mt-0 md:ml-1">
-              A Rishul Chanana Production
-            </span>
-          </p>
-          
-          <div className="flex space-x-4">
-            {socialItems.map((item) => (
-              <a 
-                key={item.name}
-                href={item.link} 
-                className="text-2xl hover:scale-125 transition-all transform-gpu"
-                title={item.name}
-              >
-                {item.icon}
-              </a>
-            ))}
-          </div>
+
+        <div className="mt-16 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} MySupplementMatch. All rights reserved.</p>
         </div>
       </div>
     </footer>

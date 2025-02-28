@@ -1,7 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, ChevronDown, Sparkles } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +25,7 @@ const Header = () => {
     { name: "How It Works", link: "#", emoji: "🧩" },
     { name: "Supplements", link: "#", emoji: "💊" },
     { name: "Science", link: "#", emoji: "🔬" },
-    { name: "About Us", link: "#", emoji: "👋" },
+    { name: "About Us", link: "#", emoji: "🌟" },
   ];
 
   return (
@@ -35,7 +34,7 @@ const Header = () => {
         ? 'bg-white shadow-lg py-2 rounded-b-3xl' 
         : 'bg-transparent py-4'
     }`}>
-      <div className="container-custom">
+      <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <motion.div 
             initial={{ opacity: 0 }}
@@ -59,93 +58,56 @@ const Header = () => {
             </motion.div>
           </motion.div>
 
-          <nav className="hidden md:flex items-center space-x-6">
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              <div className="relative w-6 h-5">
+                <span className={`absolute h-0.5 w-full bg-primary transform transition duration-300 ease-in-out ${isMenuOpen ? 'rotate-45 translate-y-2.5' : ''}`} />
+                <span className={`absolute h-0.5 w-full bg-primary transform transition duration-300 ease-in-out top-2 ${isMenuOpen ? 'opacity-0' : ''}`} />
+                <span className={`absolute h-0.5 w-full bg-primary transform transition duration-300 ease-in-out top-4 ${isMenuOpen ? '-rotate-45 -translate-y-2.5' : ''}`} />
+              </div>
+            </button>
+          </div>
+
+          {/* Desktop navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item, index) => (
-              <motion.a 
-                key={item.name}
+              <motion.a
+                key={index}
                 href={item.link}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
-                className="text-md font-body font-bold px-4 py-1.5 rounded-full relative group hover:text-primary transition-colors"
-                whileHover={{ 
-                  scale: 1.05,
-                  backgroundColor: "rgba(241, 211, 255, 0.3)"
-                }}
+                className="flex items-center text-foreground/80 hover:text-primary transition-colors"
+                whileHover={{ scale: 1.05 }}
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <span className="mr-1">{item.emoji}</span> {item.name}
+                <span className="mr-1">{item.emoji}</span>
+                <span>{item.name}</span>
               </motion.a>
             ))}
           </nav>
+        </div>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex items-center space-x-4"
-          >
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              className="hidden md:flex items-center text-md font-body font-bold bg-primary/10 px-4 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <User className="w-4 h-4 mr-2" />
-              My Account
-            </motion.button>
-            
-            <motion.button 
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="md:hidden bg-primary text-white p-2 rounded-full"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </motion.button>
-          </motion.div>
+        {/* Mobile navigation */}
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-screen opacity-100 py-4' : 'max-h-0 opacity-0'}`}>
+          <div className="flex flex-col space-y-4 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+            {navItems.map((item, index) => (
+              <a
+                key={index}
+                href={item.link}
+                className="flex items-center text-foreground/80 hover:text-primary px-4 py-2 rounded-lg transition-colors"
+              >
+                <span className="mr-2 text-lg">{item.emoji}</span>
+                <span>{item.name}</span>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
-      
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-t rounded-b-3xl overflow-hidden shadow-lg"
-          >
-            <div className="container-custom py-6">
-              <nav className="flex flex-col space-y-4">
-                {navItems.map((item, index) => (
-                  <motion.a 
-                    key={item.name}
-                    href={item.link}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: 0.05 * index }}
-                    className="text-md font-body font-bold hover:text-primary transition-colors px-4 py-2 rounded-full"
-                  >
-                    <span className="mr-2">{item.emoji}</span> {item.name}
-                  </motion.a>
-                ))}
-                <motion.a 
-                  href="#" 
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: 0.25 }}
-                  className="text-md font-body font-bold hover:text-primary transition-colors px-4 py-2 rounded-full flex items-center"
-                >
-                  <User className="w-4 h-4 mr-2" />
-                  My Account
-                </motion.a>
-              </nav>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };
