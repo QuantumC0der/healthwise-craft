@@ -151,3 +151,29 @@ const Header = () => {
 };
 
 export default Header;
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Link } from "react-router-dom";
+
+export function Header() {
+  return (
+    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur">
+      <div className="container flex h-16 items-center justify-between">
+        <Link to="/" className="flex items-center space-x-2">
+          <span className="font-display text-xl">Your App</span>
+        </Link>
+        
+        <div className="flex items-center gap-2">
+          <nav className="hidden md:flex gap-6">
+            <Link to="/" className="text-foreground/60 transition-colors hover:text-foreground">
+              Home
+            </Link>
+            <Link to="/about" className="text-foreground/60 transition-colors hover:text-foreground">
+              About
+            </Link>
+          </nav>
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  );
+}
