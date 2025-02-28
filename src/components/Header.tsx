@@ -47,8 +47,8 @@ const Header = () => {
               className="text-2xl font-display font-medium relative"
               whileHover={{ scale: 1.05 }}
             >
-              <span className="text-primary">MySupplement</span>
-              <span className="text-secondary">Match</span>
+              <span className="text-primary text-lg md:text-2xl">MySupplement</span>
+              <span className="text-secondary text-lg md:text-2xl">Match</span>
               <motion.div 
                 className="absolute -right-6 -top-3"
                 animate={{ rotate: [0, 20, 0] }}

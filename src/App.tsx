@@ -10,7 +10,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <div className="font-body">
+  <div className="font-body max-w-[100vw]">
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />

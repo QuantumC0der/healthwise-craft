@@ -127,7 +127,7 @@ const MainContent = () => {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="text-3xl md:text-4xl font-display font-medium mb-4"
                 >
-                  Take the Health Assessment
+                  Take the MySupplementMatch Assessment
                 </motion.h2>
                 
                 <motion.p
