@@ -82,7 +82,7 @@ const SupplementSummary = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl md:text-4xl font-display font-medium mb-4"
           >
-            MySupplementMatch for Every Need
+            Personalized Supplements for Every Need
           </motion.h2>
           
           <motion.p 
