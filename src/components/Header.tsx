@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, User } from "lucide-react";
+import { useUser } from '../context/UserContext'; // Assumed import
+import AuthDialog from './AuthDialog'; // Assumed import
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { userData, isAuthenticated } = useUser(); // Using the assumed context
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,6 +93,27 @@ const Header = () => {
                 <span>{item.name}</span>
               </motion.a>
             ))}
+
+            {isAuthenticated ? (
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent('open-account'))}
+                className="flex items-center gap-2 ml-2 py-1.5 px-3 rounded-full bg-primary/10 text-primary"
+              >
+                {userData.photoURL ? (
+                  <img src={userData.photoURL} alt={userData.name} className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
+                <span>{userData.name?.split(' ')[0] || 'Account'}</span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => setIsAuthDialogOpen(true)}
+                className="py-1.5 px-3 rounded-full bg-primary/10 text-primary"
+              >
+                Sign In
+              </button>
+            )}
           </nav>
         </div>
 
@@ -105,8 +130,35 @@ const Header = () => {
                 <span>{item.name}</span>
               </a>
             ))}
+            {isAuthenticated ? (
+              <button 
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('open-account'));
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-2 mt-2 py-2"
+              >
+                {userData.photoURL ? (
+                  <img src={userData.photoURL} alt={userData.name} className="w-6 h-6 rounded-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4" />
+                )}
+                <span>My Account</span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => {
+                  setIsAuthDialogOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                className="block py-2 mt-2"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
+      <AuthDialog isOpen={isAuthDialogOpen} onClose={() => setIsAuthDialogOpen(false)} />
       </div>
     </header>
   );
