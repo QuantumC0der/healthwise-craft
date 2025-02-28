@@ -14,17 +14,12 @@ type ThemeContextType = {
   setTheme: (theme: Theme) => void;
 };
 
-const initialState: ThemeContextType = {
-  theme: "system",
-  setTheme: () => null,
-};
-
-const ThemeContext = createContext<ThemeContextType>(initialState);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  storageKey = "theme",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
@@ -64,11 +59,11 @@ export function ThemeProvider({
   );
 }
 
-export const useTheme = () => {
+export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   
   if (context === undefined)
     throw new Error("useTheme must be used within a ThemeProvider");
-    
+  
   return context;
 };
