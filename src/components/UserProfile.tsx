@@ -27,7 +27,14 @@ const UserProfile = () => {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser(formData);
+    
+    // Ensure age is a number
+    const updatedData = {
+      ...formData,
+      age: Number(formData.age)
+    };
+    
+    updateUser(updatedData);
     setIsEditing(false);
   };
   

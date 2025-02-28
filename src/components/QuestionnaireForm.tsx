@@ -65,10 +65,14 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
   };
 
   const handleSubmit = () => {
-    updateUser({
+    // Convert age to number to match the UserData type
+    const updatedData = {
       ...formData,
+      age: Number(formData.age), // Explicitly convert to number
       completedQuestionnaire: true
-    });
+    };
+    
+    updateUser(updatedData);
     onComplete();
   };
 

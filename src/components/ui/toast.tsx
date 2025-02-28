@@ -1,23 +1,34 @@
 
 import React from "react";
-import { useToast } from "./use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { X } from "lucide-react";
+import { cn } from "../../lib/utils";
 
-interface ToastProps {
+export interface ToastProps {
   id: string;
   title?: string;
   description?: string;
+  action?: React.ReactNode;
   duration?: number;
   variant?: "default" | "destructive";
   onDismiss?: () => void;
+  className?: string;
 }
+
+export type ToastActionElement = React.ReactElement<{
+  className?: string;
+  altText?: string;
+}>;
 
 export function Toast({
   id,
   title,
   description,
+  action,
   variant = "default",
-  onDismiss
+  className,
+  onDismiss,
+  ...props
 }: ToastProps) {
   const { dismiss } = useToast();
   
@@ -28,28 +39,91 @@ export function Toast({
   
   return (
     <div
-      className={`rounded-lg shadow-lg p-4 flex items-start gap-3 max-w-sm bg-white border ${
-        variant === "destructive" ? "border-red-500" : "border-gray-200"
-      }`}
+      className={cn(
+        "rounded-lg shadow-lg p-4 flex items-start gap-3 max-w-sm bg-white border",
+        variant === "destructive" ? "border-red-500" : "border-gray-200",
+        className
+      )}
+      {...props}
     >
       <div className="flex-1">
         {title && (
-          <h3 className={`font-medium ${
-            variant === "destructive" ? "text-red-500" : "text-foreground"
-          }`}>
+          <ToastTitle className={variant === "destructive" ? "text-red-500" : ""}>
             {title}
-          </h3>
+          </ToastTitle>
         )}
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <ToastDescription>{description}</ToastDescription>
         )}
       </div>
-      <button
-        onClick={handleDismiss}
-        className="text-muted-foreground hover:text-foreground"
-      >
-        <X className="h-4 w-4" />
-      </button>
+      {action}
+      <ToastClose onClick={handleDismiss} />
     </div>
+  );
+}
+
+export function ToastProvider({ 
+  children 
+}: { 
+  children: React.ReactNode 
+}) {
+  return (
+    <div className="relative">
+      {children}
+    </div>
+  );
+}
+
+export function ToastViewport() {
+  return (
+    <div className="fixed top-0 right-0 z-50 p-4 flex flex-col items-end gap-2">
+      {/* Toast items will be rendered here by the Toaster */}
+    </div>
+  );
+}
+
+export function ToastTitle({ 
+  className, 
+  children, 
+  ...props 
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      className={cn("font-medium", className)}
+      {...props}
+    >
+      {children}
+    </h3>
+  );
+}
+
+export function ToastDescription({ 
+  className, 
+  children, 
+  ...props 
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      className={cn("text-sm text-muted-foreground mt-1", className)}
+      {...props}
+    >
+      {children}
+    </p>
+  );
+}
+
+export function ToastClose({ 
+  className, 
+  onClick,
+  ...props 
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className={cn("text-muted-foreground hover:text-foreground", className)}
+      onClick={onClick}
+      {...props}
+    >
+      <X className="h-4 w-4" />
+    </button>
   );
 }
