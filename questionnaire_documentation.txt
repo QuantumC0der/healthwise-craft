@@ -1,0 +1,111 @@
+
+# Supplement Recommendation Questionnaire Documentation
+
+## Overview
+This document outlines the current questionnaire flow, questions asked, and how the recommendation model works in the supplement recommendation application.
+
+## Questionnaire Flow
+The questionnaire follows a multi-step process:
+1. Welcome/Introduction screen
+2. Personal information collection
+3. Health goals selection
+4. Dietary preferences selection
+5. Health conditions assessment
+6. Allergy information collection
+7. Results/Recommendations display
+
+## Current Questions Asked
+
+### Personal Information
+- Name
+- Email
+- Age
+- Gender
+
+### Health Goals
+Users can select multiple options from:
+- Improve energy levels
+- Enhance immunity
+- Better sleep
+- Stress management
+- Weight management
+- Heart health
+- Brain function
+- Joint health
+- Digestive health
+- Anti-aging
+
+### Dietary Preferences
+Users can select from:
+- Omnivore
+- Vegetarian
+- Vegan
+- Gluten-free
+- Dairy-free
+- Keto
+- Paleo
+- Low-carb
+- Mediterranean
+
+### Health Conditions
+Users can select multiple conditions:
+- None
+- High blood pressure
+- High cholesterol
+- Diabetes
+- Thyroid issues
+- Digestive disorders
+- Arthritis
+- Anxiety/Depression
+- Insomnia
+- Autoimmune condition
+
+### Allergies
+Users can select multiple allergies:
+- None
+- Fish/Shellfish
+- Tree nuts
+- Soy
+- Dairy
+- Gluten
+- Eggs
+
+## How the Recommendation Model Works
+
+### Data Collection Process
+1. Users complete the multi-step questionnaire
+2. Data is stored in the user context using React's Context API
+3. The completedQuestionnaire flag is set to true upon completion
+
+### Recommendation Algorithm
+The application uses the function `getRecommendedSupplements()` to generate personalized recommendations based on four key parameters:
+- Health goals
+- Dietary preferences
+- Health conditions
+- Allergies
+
+The algorithm appears to:
+1. Process the user's health goals to identify primary supplement needs
+2. Filter recommendations based on dietary preferences (e.g., offering plant-based alternatives for vegetarians/vegans)
+3. Adjust recommendations based on health conditions (potentially adding or removing specific supplements)
+4. Remove any supplements that contain allergens the user has indicated
+
+### User Flow
+1. User starts by clicking "Begin Assessment" or "Start Assessment" buttons
+2. The application transitions from 'home' view to 'start' view
+3. User completes the questionnaire via the QuestionnaireForm component
+4. Upon completion, the application:
+   - Calls getRecommendedSupplements() with the user's data
+   - Displays a success toast notification
+   - Transitions to the 'recommendations' view
+5. Recommendations are presented to the user
+
+### Data Persistence
+- User data appears to be stored in a context (UserContext)
+- The completedQuestionnaire flag determines whether to show the questionnaire or recommendations
+
+## Technical Implementation
+- Form state is managed using React's useState hook
+- Multi-step form navigation is controlled by the currentStep state
+- Checkbox selections are managed through specialized handler functions
+- The questionnaire uses responsive design with different layouts for mobile and desktop
