@@ -1,20 +1,21 @@
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Hero from '@/components/Hero';
-import QuestionnaireStart from '@/components/QuestionnaireStart';
-import QuestionnaireForm from '@/components/QuestionnaireForm';
-import RecommendationCard from '@/components/RecommendationCard';
-import UserProfile from '@/components/UserProfile';
-import SupplementSummary from '@/components/SupplementSummary';
-import Testimonials from '@/components/Testimonials';
-import FAQ from '@/components/FAQ';
-import Button from '@/components/Button';
-import { UserProvider, useUser } from '@/context/UserContext';
-import { getRecommendedSupplements } from '@/data/supplements';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Hero from '../components/Hero';
+import QuestionnaireStart from '../components/QuestionnaireStart';
+import QuestionnaireForm from '../components/QuestionnaireForm';
+import RecommendationCard from '../components/RecommendationCard';
+import UserProfile from '../components/UserProfile';
+import SupplementSummary from '../components/SupplementSummary';
+import Testimonials from '../components/Testimonials';
+import FAQ from '../components/FAQ';
+import Button from '../components/Button';
+import { UserProvider, useUser } from '../context/UserContext';
+import { getRecommendedSupplements } from '../data/supplements';
 import { ChevronLeft, RefreshCw, User, ChevronDown } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '../components/ui/use-toast';
 
 const Index = () => {
   return (
@@ -33,7 +34,7 @@ const MainContent = () => {
   
   useEffect(() => {
     if (!isLoading) {
-      if (userData.completedQuestionnaire) {
+      if (userData?.completedQuestionnaire) {
         const userRecs = getRecommendedSupplements(
           userData.healthGoals,
           userData.dietaryPreferences,
@@ -46,11 +47,11 @@ const MainContent = () => {
         } else {
           setCurrentView('recommendations');
         }
-      } else if (userData.name && currentView !== 'home') {
+      } else if (userData?.name && currentView !== 'home') {
         setCurrentView('start');
       }
     }
-  }, [userData, isLoading]);
+  }, [userData, isLoading, currentView]);
   
   const handleStartQuestionnaire = () => {
     setCurrentView('start');
@@ -289,7 +290,7 @@ const MainContent = () => {
             >
               <QuestionnaireForm 
                 onComplete={handleQuestionnaireComplete}
-                onBack={() => setCurrentView(userData.completedQuestionnaire ? 'recommendations' : 'start')}
+                onBack={() => setCurrentView(userData?.completedQuestionnaire ? 'recommendations' : 'start')}
               />
             </motion.div>
           )}
