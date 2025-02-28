@@ -1,4 +1,5 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -16,40 +17,10 @@ import { getRecommendedSupplements } from '../data/supplements';
 import { ChevronLeft, RefreshCw, User, ChevronDown } from 'lucide-react';
 import { toast } from '../components/ui/use-toast';
 
-//Theme Context
-const ThemeContext = createContext('light');
-
-const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={theme === 'dark' ? 'dark' : ''}> {children} </div>
-    </ThemeContext.Provider>
-  );
-};
-
-const useTheme = () => {
-  return useContext(ThemeContext);
-};
-
-
-const ThemeToggle = () => {
-  const { theme, toggleTheme } = useTheme();
-  return (
-    <button onClick={toggleTheme}>
-      {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-    </button>
-  );
-};
-
-
 const Index = () => {
   return (
     <UserProvider>
-      <ThemeProvider>
-        <MainContent />
-      </ThemeProvider>
+      <MainContent />
     </UserProvider>
   );
 };
@@ -60,7 +31,7 @@ const MainContent = () => {
     'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile'
   >('home');
   const [recommendations, setRecommendations] = useState([]);
-
+  
   useEffect(() => {
     if (!isLoading) {
       if (userData?.completedQuestionnaire) {
@@ -71,7 +42,7 @@ const MainContent = () => {
           userData.allergies
         );
         setRecommendations(userRecs);
-
+        
         if (currentView === 'home') {
         } else {
           setCurrentView('recommendations');
@@ -81,12 +52,12 @@ const MainContent = () => {
       }
     }
   }, [userData, isLoading, currentView]);
-
+  
   const handleStartQuestionnaire = () => {
     setCurrentView('start');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
+  
   const handleQuestionnaireComplete = () => {
     const userRecs = getRecommendedSupplements(
       userData.healthGoals,
@@ -96,28 +67,28 @@ const MainContent = () => {
     );
     setRecommendations(userRecs);
     setCurrentView('recommendations');
-
+    
     toast({
       title: "Assessment Complete!",
       description: "We've generated personalized supplement recommendations based on your health profile.",
       duration: 5000,
     });
-
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
+  
   const handleRetakeQuestionnaire = () => {
     setCurrentView('questionnaire');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
+  
   const scrollToAssessment = () => {
     const assessmentElement = document.getElementById('assessment-section');
     if (assessmentElement) {
       assessmentElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -125,18 +96,18 @@ const MainContent = () => {
       </div>
     );
   }
-
+  
   if (currentView === 'home') {
     return (
-      <div className="min-h-screen flex flex-col bg-sage-50 dark:bg-gray-800">
+      <div className="min-h-screen flex flex-col bg-sage-50">
         <Header />
-
+        
         <main className="flex-grow">
           <Hero />
-
+          
           <SupplementSummary />
-
-          <div id="assessment-section" className="py-20 bg-white dark:bg-gray-700">
+          
+          <div id="assessment-section" className="py-20 bg-white">
             <div className="container-custom">
               <div className="text-center mb-12">
                 <motion.div
@@ -148,28 +119,28 @@ const MainContent = () => {
                 >
                   <span className="text-sm font-medium">Start Your Journey</span>
                 </motion.div>
-
+                
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-3xl md:text-4xl font-display font-medium mb-4 dark:text-white"
+                  className="text-3xl md:text-4xl font-display font-medium mb-4"
                 >
-                  Take the Health Assessment
+                  Take the MySupplementMatch Assessment
                 </motion.h2>
-
+                
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="text-muted-foreground max-w-2xl mx-auto mb-8 dark:text-gray-400"
+                  className="text-muted-foreground max-w-2xl mx-auto mb-8"
                 >
                   Answer a few questions about your health, lifestyle, and goals to receive 
                   personalized supplement recommendations tailored just for you.
                 </motion.p>
-
+                
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -185,7 +156,7 @@ const MainContent = () => {
                   </Button>
                 </motion.div>
               </div>
-
+              
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -193,71 +164,71 @@ const MainContent = () => {
                 transition={{ duration: 0.7, delay: 0.4 }}
                 className="relative mx-auto max-w-4xl"
               >
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-sage-100 dark:bg-gray-700 dark:border-gray-600">
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-sage-100">
                   <img 
                     src="https://images.unsplash.com/photo-1616169201999-0d80789e6563?q=80&w=2400&auto=format&fit=crop" 
                     alt="Health assessment" 
                     className="w-full h-auto"
                   />
                 </div>
-
-                <div className="absolute top-6 -right-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 dark:bg-gray-700 dark:border-gray-600 max-w-xs transform rotate-2">
+                
+                <div className="absolute top-6 -right-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 max-w-xs transform rotate-2">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 dark:bg-green-500 dark:text-white">
-                      <svg className="w-5 h-5 text-green-600 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-medium dark:text-white">Personalized for You</p>
-                      <p className="text-xs text-muted-foreground dark:text-gray-400">Recommendations based on your unique profile</p>
+                      <p className="text-sm font-medium">Personalized for You</p>
+                      <p className="text-xs text-muted-foreground">Recommendations based on your unique profile</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 dark:bg-gray-700 dark:border-gray-600 transform -rotate-2">
+                
+                <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-3 border border-sage-100 transform -rotate-2">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 dark:bg-blue-500 dark:text-white">
-                      <svg className="w-4 h-4 text-blue-600 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                       </svg>
                     </div>
-                    <p className="text-xs dark:text-gray-400">
-                      <span className="font-medium dark:text-white">5,000+ supplements</span> analyzed
+                    <p className="text-xs">
+                      <span className="font-medium">5,000+ supplements</span> analyzed
                     </p>
                   </div>
                 </div>
               </motion.div>
             </div>
           </div>
-
+          
           <Testimonials />
-
+          
           <FAQ />
-
-          <div className="py-20 bg-sage-50 dark:bg-gray-800">
+          
+          <div className="py-20 bg-sage-50">
             <div className="container-custom text-center">
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="text-3xl md:text-4xl font-display font-medium mb-6 dark:text-white"
+                className="text-3xl md:text-4xl font-display font-medium mb-6"
               >
                 Ready to Find Your Perfect Supplements?
               </motion.h2>
-
+              
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto dark:text-gray-400"
+                className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto"
               >
                 Take the first step toward optimized health with personalized recommendations 
                 based on your unique needs and goals.
               </motion.p>
-
+              
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -271,7 +242,7 @@ const MainContent = () => {
                 >
                   Start Assessment
                 </Button>
-
+                
                 <Button 
                   variant="outline" 
                   size="lg"
@@ -285,16 +256,16 @@ const MainContent = () => {
             </div>
           </div>
         </main>
-
+        
         <Footer />
       </div>
     );
   }
-
+  
   return (
-    <div className="min-h-screen flex flex-col bg-sage-50 dark:bg-gray-800">
+    <div className="min-h-screen flex flex-col bg-sage-50">
       <Header />
-
+      
       <main className="flex-grow pt-24">
         <AnimatePresence mode="wait">
           {currentView === 'start' && (
@@ -308,7 +279,7 @@ const MainContent = () => {
               <QuestionnaireStart onStart={() => setCurrentView('questionnaire')} />
             </motion.div>
           )}
-
+          
           {currentView === 'questionnaire' && (
             <motion.div
               key="questionnaire-view"
@@ -323,7 +294,7 @@ const MainContent = () => {
               />
             </motion.div>
           )}
-
+          
           {currentView === 'recommendations' && (
             <motion.div
               key="recommendations-view"
@@ -335,14 +306,14 @@ const MainContent = () => {
             >
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h1 className="text-3xl font-medium mb-2 dark:text-white">
+                  <h1 className="text-3xl font-medium mb-2">
                     Your Personalized Recommendations
                   </h1>
-                  <p className="text-muted-foreground dark:text-gray-400">
+                  <p className="text-muted-foreground">
                     Based on your health profile and goals, we recommend these supplements for you.
                   </p>
                 </div>
-
+                
                 <div className="flex space-x-3">
                   <Button 
                     variant="outline" 
@@ -353,7 +324,7 @@ const MainContent = () => {
                     <User className="w-4 h-4 mr-2" />
                     Profile
                   </Button>
-
+                  
                   <Button 
                     variant="secondary" 
                     size="sm"
@@ -365,7 +336,7 @@ const MainContent = () => {
                   </Button>
                 </div>
               </div>
-
+              
               <div className="space-y-6">
                 {recommendations.map((supplement, index) => (
                   <RecommendationCard
@@ -374,10 +345,10 @@ const MainContent = () => {
                     index={index}
                   />
                 ))}
-
+                
                 {recommendations.length === 0 && (
-                  <div className="bg-white rounded-xl shadow-md border border-sage-100 p-8 text-center dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <p className="text-lg text-muted-foreground dark:text-gray-400">
+                  <div className="bg-white rounded-xl shadow-md border border-sage-100 p-8 text-center">
+                    <p className="text-lg text-muted-foreground">
                       No recommendations found. Please retake the questionnaire with more specific information.
                     </p>
                     <Button 
@@ -389,7 +360,7 @@ const MainContent = () => {
                   </div>
                 )}
               </div>
-
+              
               <div className="mt-12 text-center">
                 <Button 
                   variant="outline"
@@ -402,7 +373,7 @@ const MainContent = () => {
               </div>
             </motion.div>
           )}
-
+          
           {currentView === 'profile' && (
             <motion.div
               key="profile-view"
@@ -414,19 +385,19 @@ const MainContent = () => {
               <div className="w-full max-w-4xl mx-auto px-4 py-6">
                 <button
                   onClick={() => setCurrentView('recommendations')}
-                  className="flex items-center text-primary hover:text-primary/80 mb-6 dark:text-white"
+                  className="flex items-center text-primary hover:text-primary/80 mb-6"
                 >
                   <ChevronLeft className="w-5 h-5 mr-1" />
                   Back to Recommendations
                 </button>
               </div>
-
+              
               <UserProfile />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
-
+      
       <Footer />
     </div>
   );

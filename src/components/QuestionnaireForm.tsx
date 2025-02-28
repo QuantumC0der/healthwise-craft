@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -37,7 +36,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
   const handleCheckboxChange = (category: string, value: string) => {
     setFormData(prev => {
       const currentValues = prev[category as keyof typeof prev] as string[];
-      
+
       if (currentValues.includes(value)) {
         return {
           ...prev,
@@ -71,7 +70,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
       age: Number(formData.age), // Explicitly convert to number
       completedQuestionnaire: true
     };
-    
+
     updateUser(updatedData);
     onComplete();
   };
@@ -140,12 +139,12 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
               <ChevronLeft className="w-5 h-5 mr-1" />
               Back
             </button>
-            
+
             <div className="text-sm text-muted-foreground">
               Step {currentStep} of 4
             </div>
           </div>
-          
+
           <div className="w-full bg-sage-100 h-2 rounded-full overflow-hidden">
             <div 
               className="bg-primary h-2 transition-all duration-300"
@@ -153,7 +152,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             ></div>
           </div>
         </div>
-        
+
         {currentStep === 1 && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -162,7 +161,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             transition={{ duration: 0.3 }}
           >
             <h2 className="text-2xl font-medium mb-6">Personal Information</h2>
-            
+
             <div className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -179,7 +178,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                   required
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-1">
                   Email Address
@@ -195,7 +194,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="age" className="block text-sm font-medium mb-1">
@@ -214,7 +213,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="gender" className="block text-sm font-medium mb-1">
                     Gender
@@ -236,7 +235,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-8 flex justify-end">
               <Button onClick={handleNext}>
                 Continue
@@ -245,7 +244,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             </div>
           </motion.div>
         )}
-        
+
         {currentStep === 2 && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -257,8 +256,8 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             <p className="text-muted-foreground mb-6">
               Select all the health goals you'd like to focus on (select all that apply):
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {healthGoalsOptions.map(goal => (
                 <label 
                   key={goal} 
@@ -289,13 +288,13 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                 </label>
               ))}
             </div>
-            
+
             <div className="mt-8 flex justify-between">
               <Button variant="outline" onClick={handlePrevious}>
                 <ChevronLeft className="mr-1 w-4 h-4" />
                 Back
               </Button>
-              
+
               <Button onClick={handleNext}>
                 Continue
                 <ChevronRight className="ml-1 w-4 h-4" />
@@ -303,7 +302,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             </div>
           </motion.div>
         )}
-        
+
         {currentStep === 3 && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -315,8 +314,8 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             <p className="text-muted-foreground mb-6">
               Select any dietary preferences or restrictions you follow:
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
               {dietaryPreferencesOptions.map(preference => (
                 <label 
                   key={preference} 
@@ -347,13 +346,13 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                 </label>
               ))}
             </div>
-            
+
             <div className="mt-8 flex justify-between">
               <Button variant="outline" onClick={handlePrevious}>
                 <ChevronLeft className="mr-1 w-4 h-4" />
                 Back
               </Button>
-              
+
               <Button onClick={handleNext}>
                 Continue
                 <ChevronRight className="ml-1 w-4 h-4" />
@@ -361,7 +360,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             </div>
           </motion.div>
         )}
-        
+
         {currentStep === 4 && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -370,10 +369,10 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             transition={{ duration: 0.3 }}
           >
             <h2 className="text-2xl font-medium mb-6">Health Conditions & Allergies</h2>
-            
+
             <div className="mb-8">
               <h3 className="text-lg font-medium mb-4">Do you have any of the following health conditions?</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {healthConditionsOptions.map(condition => (
                   <label 
                     key={condition} 
@@ -405,10 +404,10 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                 ))}
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-medium mb-4">Do you have any allergies?</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {allergyOptions.map(allergy => (
                   <label 
                     key={allergy} 
@@ -440,13 +439,13 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
                 ))}
               </div>
             </div>
-            
+
             <div className="mt-8 flex justify-between">
               <Button variant="outline" onClick={handlePrevious}>
                 <ChevronLeft className="mr-1 w-4 h-4" />
                 Back
               </Button>
-              
+
               <Button onClick={handleSubmit}>
                 Complete Assessment
               </Button>

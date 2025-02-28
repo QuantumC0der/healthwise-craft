@@ -47,8 +47,8 @@ const Header = () => {
               className="text-2xl font-display font-medium relative"
               whileHover={{ scale: 1.05 }}
             >
-              <span className="text-primary">MySupplement</span>
-              <span className="text-secondary">Match</span>
+              <span className="text-primary text-lg md:text-2xl">MySupplement</span>
+              <span className="text-secondary text-lg md:text-2xl">Match</span>
               <motion.div 
                 className="absolute -right-6 -top-3"
                 animate={{ rotate: [0, 20, 0] }}
@@ -151,29 +151,3 @@ const Header = () => {
 };
 
 export default Header;
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { Link } from "react-router-dom";
-
-export function Header() {
-  return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <span className="font-display text-xl">Your App</span>
-        </Link>
-        
-        <div className="flex items-center gap-2">
-          <nav className="hidden md:flex gap-6">
-            <Link to="/" className="text-foreground/60 transition-colors hover:text-foreground">
-              Home
-            </Link>
-            <Link to="/about" className="text-foreground/60 transition-colors hover:text-foreground">
-              About
-            </Link>
-          </nav>
-          <ThemeToggle />
-        </div>
-      </div>
-    </header>
-  );
-}
