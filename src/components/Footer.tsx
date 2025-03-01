@@ -1,4 +1,6 @@
+
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const socialItems = [
@@ -11,28 +13,28 @@ const Footer = () => {
     {
       title: "Fun Stuff",
       links: [
-        { name: "How It Works", link: "#" },
-        { name: "Science Magic", link: "#" },
-        { name: "Cool Research", link: "#" },
-        { name: "Our Blog", link: "#" },
+        { name: "How It Works", link: "/how-it-works" },
+        { name: "Science Magic", link: "/supplement-science" },
+        { name: "Cool Research", link: "/supplement-science#research" },
+        { name: "Our Blog", link: "/blog" },
       ]
     },
     {
       title: "Our Team",
       links: [
-        { name: "About Us", link: "#" },
-        { name: "Join Us", link: "#" },
-        { name: "Say Hello", link: "#" },
-        { name: "News", link: "#" },
+        { name: "About Us", link: "/about-us" },
+        { name: "Join Us", link: "/join-us" },
+        { name: "Say Hello", link: "/contact" },
+        { name: "News", link: "/news" },
       ]
     },
     {
       title: "Boring But Important",
       links: [
-        { name: "Terms", link: "#" },
-        { name: "Privacy", link: "#" },
-        { name: "Cookies", link: "#" },
-        { name: "Disclaimer", link: "#" },
+        { name: "Terms", link: "/terms" },
+        { name: "Privacy", link: "/privacy" },
+        { name: "Cookies", link: "/cookies" },
+        { name: "Disclaimer", link: "/terms#disclaimer" },
       ]
     }
   ];
@@ -43,10 +45,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand section */}
           <div className="space-y-6">
-            <div className="text-2xl font-display font-medium">
-              <span className="text-primary">MySupplement</span>
-              <span className="text-secondary">Match</span>
-            </div>
+            <Link to="/" className="inline-block">
+              <div className="text-2xl font-display font-medium">
+                <span className="text-primary">MySupplement</span>
+                <span className="text-secondary">Match</span>
+              </div>
+            </Link>
             <p className="text-muted-foreground max-w-xs">
               Finding your perfect supplement match based on real science, real results, and your unique body.
             </p>
@@ -71,12 +75,12 @@ const Footer = () => {
               <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
-                    <a 
-                      href={link.link} 
+                    <Link 
+                      to={link.link} 
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -85,7 +89,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} MySupplementMatch. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} MySupplementMatch. All rights reserved. A Rishul Chanana Production</p>
         </div>
       </div>
     </footer>
