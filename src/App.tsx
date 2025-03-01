@@ -16,6 +16,7 @@ import SayHello from "./pages/SayHello";
 import News from "./pages/News";
 import Blog from "./pages/Blog";
 import CategoryPage from "./pages/CategoryPage";
+import SupplementDetail from "./pages/SupplementDetail";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/news" element={<News />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/category/:categoryId" element={<CategoryPage />} />
+              <Route path="/supplements/:supplementId" element={<SupplementDetail />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookies" element={<Cookies />} />
