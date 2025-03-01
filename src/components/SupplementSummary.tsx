@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Button from './Button';
+import { Link } from 'react-router-dom';
 
 // Sample supplement categories
 const categories = [
@@ -137,10 +138,12 @@ const SupplementSummary = () => {
                     whileHover={{ x: 5 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Button variant="outline" className="group">
-                      <span>Explore</span>
-                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                    </Button>
+                    <Link to={`/category/${category.id}`}>
+                      <Button variant="outline" className="group">
+                        <span>Explore</span>
+                        <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                      </Button>
+                    </Link>
                   </motion.div>
                 </div>
               </div>

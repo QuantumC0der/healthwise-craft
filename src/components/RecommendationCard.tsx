@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, Star, ShoppingCart, Heart, Info } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { toast } from '@/components/ui/use-toast';
 
 interface Supplement {
   id: string;
@@ -20,6 +22,7 @@ interface Supplement {
   image: string;
   tags: string[];
   matchScore: number;
+  category?: string;
 }
 
 interface RecommendationCardProps {
@@ -32,6 +35,20 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ supplement, ind
   
   const toggleExpanded = () => {
     setExpanded(!expanded);
+  };
+  
+  const handleAddToCart = () => {
+    toast({
+      title: "Added to wishlist!",
+      description: `${supplement.name} has been added to your wishlist.`,
+    });
+  };
+  
+  const handleBuyNow = () => {
+    toast({
+      title: "Proceeding to checkout!",
+      description: `You're buying ${supplement.name}.`,
+    });
   };
   
   // Function to render stars based on rating
@@ -70,13 +87,15 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ supplement, ind
       <div className="p-5 md:p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="w-full md:w-1/4">
-            <div className="aspect-square rounded-lg overflow-hidden bg-sage-50">
-              <img
-                src={supplement.image}
-                alt={supplement.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <Link to={`/supplements/${supplement.id}`}>
+              <div className="aspect-square rounded-lg overflow-hidden bg-sage-50">
+                <img
+                  src={supplement.image}
+                  alt={supplement.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </Link>
           </div>
           
           <div className="flex-1">
@@ -89,7 +108,9 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ supplement, ind
               </span>
             </div>
             
-            <h3 className="text-xl font-medium mb-1">{supplement.name}</h3>
+            <Link to={`/supplements/${supplement.id}`}>
+              <h3 className="text-xl font-medium mb-1 hover:text-primary transition-colors">{supplement.name}</h3>
+            </Link>
             
             <div className="flex items-center gap-2 mb-3">
               <div className="flex">
@@ -124,11 +145,17 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ supplement, ind
               </div>
               
               <div className="flex gap-2">
-                <button className="flex items-center justify-center rounded-md px-4 py-2 bg-white border border-sage-200 text-sage-700 hover:bg-sage-50 transition-colors">
+                <button 
+                  className="flex items-center justify-center rounded-md px-4 py-2 bg-white border border-sage-200 text-sage-700 hover:bg-sage-50 transition-colors"
+                  onClick={handleAddToCart}
+                >
                   <Heart className="w-4 h-4 mr-1" />
                   Save
                 </button>
-                <button className="flex items-center justify-center rounded-md px-4 py-2 bg-primary text-white hover:bg-primary/90 transition-colors">
+                <button 
+                  className="flex items-center justify-center rounded-md px-4 py-2 bg-primary text-white hover:bg-primary/90 transition-colors"
+                  onClick={handleBuyNow}
+                >
                   <ShoppingCart className="w-4 h-4 mr-1" />
                   Buy Now
                 </button>
