@@ -89,7 +89,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} MySupplementMatch. All rights reserved. A Rishul Chanana Production</p>
+          <p>© {new Date().getFullYear()} MySupplementMatch. All rights reserved. Rishul Chanana, Founder & CEO</p>
         </div>
       </div>
     </footer>

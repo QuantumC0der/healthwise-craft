@@ -103,8 +103,8 @@ const AboutUs = () => {
               >
                 <div className="bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-secondary p-4">
                   <img 
-                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" 
-                    alt="Team working together"
+                    src="/lovable-uploads/1ea00e70-cee4-4e07-a819-3e90fef8e5d0.png" 
+                    alt="Rishul Chanana"
                     className="w-full h-auto rounded-2xl"
                   />
                 </div>
