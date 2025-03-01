@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import { Sparkles, ChevronRight } from "lucide-react";
-import { supplements } from "../data/supplements";
+import supplements from "../data/supplements";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
