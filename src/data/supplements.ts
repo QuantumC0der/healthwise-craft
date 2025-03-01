@@ -16,6 +16,7 @@ interface Supplement {
   image: string;
   tags: string[];
   matchScore: number;
+  category: string; // Add category property
 }
 
 const supplements: Supplement[] = [
@@ -43,7 +44,8 @@ const supplements: Supplement[] = [
     rating: 4.7,
     image: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?q=80&w=1829&auto=format&fit=crop",
     tags: ["heart health", "brain health", "joint health", "anti-inflammatory"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Omega Fatty Acids"
   },
   {
     id: "s2",
@@ -68,7 +70,8 @@ const supplements: Supplement[] = [
     rating: 4.8,
     image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?q=80&w=2069&auto=format&fit=crop",
     tags: ["bone health", "immune support", "mood support", "vitamin"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Vitamins & Minerals"
   },
   {
     id: "s3",
@@ -93,7 +96,8 @@ const supplements: Supplement[] = [
     rating: 4.6,
     image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?q=80&w=2070&auto=format&fit=crop",
     tags: ["sleep support", "stress relief", "muscle recovery", "mineral"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Vitamins & Minerals"
   },
   {
     id: "s4",
@@ -118,7 +122,8 @@ const supplements: Supplement[] = [
     rating: 4.5,
     image: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=2070&auto=format&fit=crop",
     tags: ["gut health", "immune support", "digestive health", "microbiome"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Digestive Health"
   },
   {
     id: "s5",
@@ -144,7 +149,8 @@ const supplements: Supplement[] = [
     rating: 4.6,
     image: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=2070&auto=format&fit=crop",
     tags: ["stress relief", "adaptogen", "mental clarity", "energy", "mood support"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Herbs & Botanicals"
   },
   {
     id: "s6",
@@ -170,7 +176,8 @@ const supplements: Supplement[] = [
     rating: 4.7,
     image: "https://images.unsplash.com/photo-1577174881658-0f30ed549adc?q=80&w=1974&auto=format&fit=crop",
     tags: ["energy", "brain health", "metabolism", "vitamin"],
-    matchScore: 0
+    matchScore: 0,
+    category: "Vitamins & Minerals"
   }
 ];
 

@@ -1,11 +1,10 @@
-
 import React from "react";
 import { useToast } from "../../hooks/use-toast";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 export interface ToastProps {
-  id: string;
+  id?: string;
   title?: string;
   description?: string;
   action?: React.ReactNode;
@@ -13,6 +12,7 @@ export interface ToastProps {
   variant?: "default" | "destructive";
   onDismiss?: () => void;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export type ToastActionElement = React.ReactElement<{
@@ -28,12 +28,13 @@ export function Toast({
   variant = "default",
   className,
   onDismiss,
+  children,
   ...props
 }: ToastProps) {
   const { dismiss } = useToast();
   
   const handleDismiss = () => {
-    dismiss(id);
+    if (id) dismiss(id);
     if (onDismiss) onDismiss();
   };
   
@@ -49,14 +50,7 @@ export function Toast({
       {...props}
     >
       <div className="flex-1">
-        {title && (
-          <ToastTitle className={variant === "destructive" ? "text-destructive" : "text-primary"}>
-            {title}
-          </ToastTitle>
-        )}
-        {description && (
-          <ToastDescription>{description}</ToastDescription>
-        )}
+        {children}
       </div>
       {action}
       <ToastClose onClick={handleDismiss} />
