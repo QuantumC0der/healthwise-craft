@@ -11,20 +11,12 @@ import SupplementSummary from '../components/SupplementSummary';
 import Testimonials from '../components/Testimonials';
 import FAQ from '../components/FAQ';
 import Button from '../components/Button';
-import { UserProvider, useUser } from '../context/UserContext';
+import { useUser } from '../context/UserContext';
 import { getRecommendedSupplements } from '../data/supplements';
 import { ChevronLeft, RefreshCw, User, ChevronDown } from 'lucide-react';
 import { toast } from '../components/ui/use-toast';
 
 const Index = () => {
-  return (
-    <UserProvider>
-      <MainContent />
-    </UserProvider>
-  );
-};
-
-const MainContent = () => {
   const { userData, isLoading, fetchLatestAssessment } = useUser();
   const [currentView, setCurrentView] = useState<
     'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile'
