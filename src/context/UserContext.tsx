@@ -26,6 +26,7 @@ interface UserContextType {
   resetUser: () => void;
   saveAssessment: (assessmentType: string, healthProfile: HealthProfile) => Promise<void>;
   fetchLatestAssessment: () => Promise<void>;
+  saveRecommendations: (supplementIds: string[], assessmentId: string) => Promise<void>;
 }
 
 const defaultUserData: UserData = {
@@ -167,6 +168,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const saveAssessment = async (assessmentType: string, healthProfile: HealthProfile) => {
     try {
+      let assessmentId: string | null = null;
+      
       if (user) {
         // Check if profile exists first
         const { data: existingProfile } = await supabase
@@ -204,6 +207,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .select();
 
         if (error) throw error;
+        
+        if (data && data.length > 0) {
+          assessmentId = data[0].id;
+        }
 
         setUserData((prev) => ({
           ...prev,
@@ -211,7 +218,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           completedQuestionnaire: true
         }));
 
-        return;
+        return assessmentId;
       }
 
       // For guests, just update local state
@@ -220,6 +227,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...healthProfile,
         completedQuestionnaire: true
       }));
+      
+      return assessmentId;
     } catch (error: any) {
       console.error('Error saving assessment:', error);
       toast({
@@ -228,6 +237,34 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         variant: "destructive"
       });
       throw error;
+    }
+  };
+  
+  const saveRecommendations = async (supplementIds: string[], assessmentId: string) => {
+    if (!user) return; // Only save for authenticated users
+    
+    try {
+      const { error } = await supabase
+        .from('user_recommendations')
+        .insert({
+          user_id: user.id,
+          assessment_id: assessmentId,
+          supplement_ids: supplementIds
+        });
+        
+      if (error) throw error;
+      
+      toast({
+        title: "Recommendations Saved",
+        description: "Your supplement recommendations have been saved to your profile."
+      });
+    } catch (error: any) {
+      console.error('Error saving recommendations:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save your recommendations.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -288,7 +325,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateUser, 
       resetUser,
       saveAssessment,
-      fetchLatestAssessment
+      fetchLatestAssessment,
+      saveRecommendations
     }}>
       {children}
     </UserContext.Provider>

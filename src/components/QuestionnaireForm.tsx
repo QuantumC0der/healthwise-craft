@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from './Button';
 import { useUser } from '../context/UserContext';
 import { toast } from './ui/use-toast';
+import { getRecommendedSupplements } from '../data/supplements';
 
 interface QuestionnaireFormProps {
   onComplete: () => void;
@@ -16,7 +18,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({
   onBack, 
   assessmentType = 'general' 
 }) => {
-  const { userData, saveAssessment, updateUser } = useUser();
+  const { userData, saveAssessment, updateUser, saveRecommendations } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: userData.name || '',
@@ -83,12 +85,28 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({
         gender: updatedData.gender
       });
       
-      await saveAssessment(assessmentType, {
+      const healthProfile = {
         healthGoals: updatedData.healthGoals,
         dietaryPreferences: updatedData.dietaryPreferences,
         healthConditions: updatedData.healthConditions,
         allergies: updatedData.allergies
-      });
+      };
+      
+      const assessmentId = await saveAssessment(assessmentType, healthProfile);
+      
+      // Get recommended supplements and save them to the database
+      const recommendedSupplements = getRecommendedSupplements(
+        updatedData.healthGoals,
+        updatedData.dietaryPreferences,
+        updatedData.healthConditions,
+        updatedData.allergies
+      );
+      
+      // Save supplement IDs to database if an assessment was created
+      if (assessmentId && recommendedSupplements.length > 0) {
+        const supplementIds = recommendedSupplements.map(supplement => supplement.id);
+        await saveRecommendations(supplementIds, assessmentId);
+      }
       
       toast({
         title: "Assessment Completed",
