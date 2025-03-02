@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
@@ -31,6 +30,7 @@ const MainContent = () => {
     'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile'
   >('home');
   const [recommendations, setRecommendations] = useState([]);
+  const [currentAssessmentType, setCurrentAssessmentType] = useState('general');
   
   useEffect(() => {
     if (!isLoading) {
@@ -276,7 +276,19 @@ const MainContent = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <QuestionnaireStart onStart={() => setCurrentView('questionnaire')} />
+              <QuestionnaireStart 
+                onStart={() => setCurrentView('questionnaire')} 
+                assessmentType={{
+                  id: currentAssessmentType,
+                  title: currentAssessmentType === 'fitness' ? 'Fitness Assessment' : 
+                         currentAssessmentType === 'brain' ? 'Cognitive Health Assessment' :
+                         currentAssessmentType === 'sleep' ? 'Sleep Quality Assessment' :
+                         'General Health Assessment',
+                  description: 'Answer a few questions to receive personalized supplement recommendations tailored to your needs.',
+                  image: '',
+                  targetAudience: 'Everyone looking to improve their health'
+                }}
+              />
             </motion.div>
           )}
           
@@ -291,6 +303,7 @@ const MainContent = () => {
               <QuestionnaireForm 
                 onComplete={handleQuestionnaireComplete}
                 onBack={() => setCurrentView(userData?.completedQuestionnaire ? 'recommendations' : 'start')}
+                assessmentType={currentAssessmentType}
               />
             </motion.div>
           )}

@@ -1,18 +1,22 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from './Button';
 import { useUser } from '../context/UserContext';
+import { toast } from './ui/use-toast';
 
 interface QuestionnaireFormProps {
-  onComplete: (formData: any) => void;
+  onComplete: () => void;
   onBack: () => void;
-  assessmentType: string;
+  assessmentType?: string;
 }
 
-const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBack, assessmentType }) => {
-  const { userData } = useUser();
+const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ 
+  onComplete, 
+  onBack, 
+  assessmentType = 'general' 
+}) => {
+  const { userData, saveAssessment, updateUser } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: userData.name || '',
@@ -65,17 +69,43 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
     }
   };
 
-  const handleSubmit = () => {
-    // Convert age to number to match the UserData type
+  const handleSubmit = async () => {
     const updatedData = {
       ...formData,
       age: Number(formData.age)
     };
     
-    onComplete(updatedData);
+    try {
+      await updateUser({
+        name: updatedData.name,
+        email: updatedData.email,
+        age: updatedData.age,
+        gender: updatedData.gender
+      });
+      
+      await saveAssessment(assessmentType, {
+        healthGoals: updatedData.healthGoals,
+        dietaryPreferences: updatedData.dietaryPreferences,
+        healthConditions: updatedData.healthConditions,
+        allergies: updatedData.allergies
+      });
+      
+      toast({
+        title: "Assessment Completed",
+        description: "Your health assessment has been saved successfully.",
+      });
+      
+      onComplete();
+    } catch (error) {
+      console.error('Error submitting assessment:', error);
+      toast({
+        title: "Error",
+        description: "There was a problem saving your assessment. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
-  // Define different goal options based on assessment type
   const getHealthGoalsOptions = () => {
     const commonOptions = [
       "Improve energy levels",
@@ -142,7 +172,6 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
     "Mediterranean"
   ];
 
-  // Customize health conditions based on assessment type
   const getHealthConditionsOptions = () => {
     const commonConditions = [
       "None",

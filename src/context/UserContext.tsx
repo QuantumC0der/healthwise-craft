@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { useAuth } from './AuthContext';
+import { toast } from '../components/ui/use-toast';
 
 interface HealthProfile {
   healthGoals: string[];
@@ -132,6 +133,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           if (error) {
             console.error('Error updating profile:', error);
+            toast({
+              title: "Error",
+              description: "Failed to update your profile information.",
+              variant: "destructive"
+            });
           }
         } catch (error) {
           console.error('Error updating profile:', error);
@@ -175,8 +181,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...healthProfile,
         completedQuestionnaire: true
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving assessment:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save your assessment.",
+        variant: "destructive"
+      });
       throw error;
     }
   };
@@ -204,8 +215,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           completedQuestionnaire: true
         }));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching assessment:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to fetch your assessment data.",
+        variant: "destructive"
+      });
     }
   };
 

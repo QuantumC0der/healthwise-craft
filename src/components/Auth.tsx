@@ -1,25 +1,22 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Key, Loader, AlertCircle } from 'lucide-react';
-import Button from './Button';
-import { useUser } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
-import { toast } from '../components/ui/use-toast';
+import Button from './Button';
+import { useAuth } from '../context/AuthContext';
+import { useUser } from '../context/UserContext';
+import { toast } from './ui/use-toast';
 
 const Auth = () => {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
-  const { updateUser } = useUser();
-  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const { user } = useAuth();
+  const { updateUser, fetchLatestAssessment } = useUser();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
@@ -28,168 +25,146 @@ const Auth = () => {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              name: name,
+            },
+          }
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Account created!",
-          description: "Please check your email to verify your account.",
-          duration: 5000,
-        });
+        if (data.user) {
+          // Create profile record
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: data.user.id,
+              name: name,
+              email: email
+            });
 
+          if (profileError) throw profileError;
+          
+          toast({
+            title: "Success!",
+            description: "Your account has been created. Please check your email for verification.",
+          });
+        }
       } else {
         // Sign in
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
-          password,
+          password
         });
 
         if (error) throw error;
 
-        // Fetch the user profile
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user?.id)
-          .single();
+        // Fetch user profile
+        if (data.user) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .single();
 
-        if (profileError && profileError.code !== 'PGRST116') {
-          console.error('Error fetching profile:', profileError);
+          if (profileError && profileError.code !== 'PGRST116') {
+            throw profileError;
+          }
+
+          if (profileData) {
+            updateUser({
+              name: profileData.name,
+              email: profileData.email,
+              age: profileData.age,
+              gender: profileData.gender
+            });
+          }
+
+          // Fetch latest assessment
+          await fetchLatestAssessment();
+          
+          toast({
+            title: "Welcome back!",
+            description: "You've successfully logged in.",
+          });
         }
-
-        // Fetch assessments if they exist
-        const { data: assessmentsData, error: assessmentsError } = await supabase
-          .from('assessments')
-          .select('*')
-          .eq('user_id', data.user?.id)
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (assessmentsError) {
-          console.error('Error fetching assessments:', assessmentsError);
-        }
-
-        // Update user context
-        updateUser({
-          name: profileData?.name || '',
-          email: data.user?.email || '',
-          age: profileData?.age || 0,
-          gender: profileData?.gender || '',
-          healthGoals: assessmentsData?.[0]?.health_goals || [],
-          dietaryPreferences: assessmentsData?.[0]?.dietary_preferences || [],
-          healthConditions: assessmentsData?.[0]?.health_conditions || [],
-          allergies: assessmentsData?.[0]?.allergies || [],
-          completedQuestionnaire: assessmentsData ? true : false,
-        });
-
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in.",
-          duration: 3000,
-        });
-
-        navigate('/');
       }
     } catch (error: any) {
-      setError(error.error_description || error.message || "An error occurred");
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred during authentication",
+        variant: "destructive"
+      });
+      console.error('Authentication error:', error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container-custom py-16 max-w-md">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl shadow-md border border-sage-100 p-8"
-      >
-        <div className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-display font-medium mb-2">
-            {isSignUp ? 'Create an Account' : 'Welcome Back'}
-          </h1>
-          <p className="text-muted-foreground">
-            {isSignUp 
-              ? 'Join MySupplementMatch to get personalized recommendations' 
-              : 'Sign in to access your personalized supplement recommendations'}
-          </p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start">
-            <AlertCircle className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-            <p className="text-sm">{error}</p>
+    <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6">
+      <h2 className="text-2xl font-bold text-center mb-6">
+        {isSignUp ? 'Create an Account' : 'Sign In'}
+      </h2>
+      
+      <form onSubmit={handleAuth} className="space-y-4">
+        {isSignUp && (
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium mb-1">Name</label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+              required={isSignUp}
+            />
           </div>
         )}
-
-        <form onSubmit={handleAuth} className="space-y-6">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email Address
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                <Mail className="w-5 h-5" />
-              </span>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field pl-10"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1">
-              Password
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                <Key className="w-5 h-5" />
-              </span>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-field pl-10"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <Loader className="w-4 h-4 mr-2 animate-spin" />
-                {isSignUp ? 'Creating Account...' : 'Signing In...'}
-              </>
-            ) : (
-              <>{isSignUp ? 'Create Account' : 'Sign In'}</>
-            )}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={() => setIsSignUp(!isSignUp)}
-            className="text-primary hover:underline text-sm"
-          >
-            {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
-          </button>
+        
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+            required
+          />
         </div>
-      </motion.div>
+        
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+            required
+          />
+        </div>
+        
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={loading}
+        >
+          {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Sign In'}
+        </Button>
+      </form>
+      
+      <div className="mt-4 text-center">
+        <button
+          onClick={() => setIsSignUp(!isSignUp)}
+          className="text-primary hover:underline"
+          type="button"
+        >
+          {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+        </button>
+      </div>
     </div>
   );
 };
