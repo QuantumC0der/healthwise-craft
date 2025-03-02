@@ -1,5 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../integrations/supabase/client';
+import { useAuth } from './AuthContext';
 
 interface HealthProfile {
   healthGoals: string[];
@@ -21,6 +23,8 @@ interface UserContextType {
   isLoading: boolean;
   updateUser: (data: Partial<UserData>) => void;
   resetUser: () => void;
+  saveAssessment: (assessmentType: string, healthProfile: HealthProfile) => Promise<void>;
+  fetchLatestAssessment: () => Promise<void>;
 }
 
 const defaultUserData: UserData = {
@@ -40,14 +44,57 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userData, setUserData] = useState<UserData>(defaultUserData);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Simulate loading user data from localStorage or API
+    // When auth state changes (login/logout), update user data
     const loadUser = async () => {
+      setIsLoading(true);
       try {
-        const savedUserData = localStorage.getItem('userData');
-        if (savedUserData) {
-          setUserData(JSON.parse(savedUserData));
+        if (user) {
+          // Fetch user profile from database
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Error loading user profile:', profileError);
+          }
+
+          // Fetch latest assessment if available
+          const { data: assessment, error: assessmentError } = await supabase
+            .from('assessments')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          if (assessmentError) {
+            console.error('Error loading assessment:', assessmentError);
+          }
+
+          // Update user data
+          setUserData({
+            name: profile?.name || '',
+            email: user.email || '',
+            age: profile?.age || 0,
+            gender: profile?.gender || '',
+            healthGoals: assessment?.[0]?.health_goals || [],
+            dietaryPreferences: assessment?.[0]?.dietary_preferences || [],
+            healthConditions: assessment?.[0]?.health_conditions || [],
+            allergies: assessment?.[0]?.allergies || [],
+            completedQuestionnaire: assessment && assessment.length > 0 ? true : false,
+          });
+        } else {
+          // User logged out, load from localStorage as fallback for guests
+          const savedUserData = localStorage.getItem('userData');
+          if (savedUserData) {
+            setUserData(JSON.parse(savedUserData));
+          } else {
+            setUserData(defaultUserData);
+          }
         }
       } catch (error) {
         console.error('Error loading user data:', error);
@@ -57,26 +104,137 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     loadUser();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    // Save user data to localStorage whenever it changes
-    if (!isLoading) {
+    // Save user data to localStorage as fallback for guests
+    if (!isLoading && !user) {
       localStorage.setItem('userData', JSON.stringify(userData));
     }
-  }, [userData, isLoading]);
+  }, [userData, isLoading, user]);
 
-  const updateUser = (data: Partial<UserData>) => {
+  const updateUser = async (data: Partial<UserData>) => {
     setUserData((prev) => ({ ...prev, ...data }));
+
+    // If authenticated, also update profile in database
+    if (user && (data.name !== undefined || data.age !== undefined || data.gender !== undefined)) {
+      const profileData: any = {};
+      if (data.name !== undefined) profileData.name = data.name;
+      if (data.age !== undefined) profileData.age = data.age;
+      if (data.gender !== undefined) profileData.gender = data.gender;
+
+      if (Object.keys(profileData).length > 0) {
+        try {
+          const { error } = await supabase
+            .from('profiles')
+            .update(profileData)
+            .eq('id', user.id);
+
+          if (error) {
+            console.error('Error updating profile:', error);
+          }
+        } catch (error) {
+          console.error('Error updating profile:', error);
+        }
+      }
+    }
   };
 
-  const resetUser = () => {
-    setUserData(defaultUserData);
-    localStorage.removeItem('userData');
+  const saveAssessment = async (assessmentType: string, healthProfile: HealthProfile) => {
+    try {
+      if (user) {
+        // Save assessment to database
+        const { data, error } = await supabase
+          .from('assessments')
+          .insert({
+            user_id: user.id,
+            assessment_type: assessmentType,
+            health_goals: healthProfile.healthGoals,
+            dietary_preferences: healthProfile.dietaryPreferences,
+            health_conditions: healthProfile.healthConditions,
+            allergies: healthProfile.allergies
+          })
+          .select();
+
+        if (error) {
+          throw error;
+        }
+
+        setUserData((prev) => ({
+          ...prev,
+          ...healthProfile,
+          completedQuestionnaire: true
+        }));
+
+        return;
+      }
+
+      // For guests, just update local state
+      setUserData((prev) => ({
+        ...prev,
+        ...healthProfile,
+        completedQuestionnaire: true
+      }));
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      throw error;
+    }
+  };
+
+  const fetchLatestAssessment = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setUserData((prev) => ({
+          ...prev,
+          healthGoals: data[0].health_goals,
+          dietaryPreferences: data[0].dietary_preferences,
+          healthConditions: data[0].health_conditions,
+          allergies: data[0].allergies,
+          completedQuestionnaire: true
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching assessment:', error);
+    }
+  };
+
+  const resetUser = async () => {
+    if (user) {
+      // For authenticated users, we don't delete their profile data
+      setUserData({
+        ...defaultUserData,
+        name: userData.name,
+        email: userData.email,
+        age: userData.age,
+        gender: userData.gender
+      });
+    } else {
+      // For guests, completely reset
+      setUserData(defaultUserData);
+      localStorage.removeItem('userData');
+    }
   };
 
   return (
-    <UserContext.Provider value={{ userData, isLoading, updateUser, resetUser }}>
+    <UserContext.Provider value={{ 
+      userData, 
+      isLoading, 
+      updateUser, 
+      resetUser,
+      saveAssessment,
+      fetchLatestAssessment
+    }}>
       {children}
     </UserContext.Provider>
   );

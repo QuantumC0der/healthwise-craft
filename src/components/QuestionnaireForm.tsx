@@ -6,12 +6,13 @@ import Button from './Button';
 import { useUser } from '../context/UserContext';
 
 interface QuestionnaireFormProps {
-  onComplete: () => void;
+  onComplete: (formData: any) => void;
   onBack: () => void;
+  assessmentType: string;
 }
 
-const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBack }) => {
-  const { userData, updateUser } = useUser();
+const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBack, assessmentType }) => {
+  const { userData } = useUser();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: userData.name || '',
@@ -68,26 +69,66 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
     // Convert age to number to match the UserData type
     const updatedData = {
       ...formData,
-      age: Number(formData.age), // Explicitly convert to number
-      completedQuestionnaire: true
+      age: Number(formData.age)
     };
     
-    updateUser(updatedData);
-    onComplete();
+    onComplete(updatedData);
   };
 
-  const healthGoalsOptions = [
-    "Improve energy levels",
-    "Enhance immunity",
-    "Better sleep",
-    "Stress management",
-    "Weight management",
-    "Heart health",
-    "Brain function",
-    "Joint health",
-    "Digestive health",
-    "Anti-aging"
-  ];
+  // Define different goal options based on assessment type
+  const getHealthGoalsOptions = () => {
+    const commonOptions = [
+      "Improve energy levels",
+      "Enhance immunity",
+      "Better sleep",
+      "Stress management",
+      "Digestive health"
+    ];
+    
+    switch(assessmentType) {
+      case 'fitness':
+        return [
+          "Build muscle",
+          "Improve strength",
+          "Enhance endurance",
+          "Speed up recovery",
+          "Weight management",
+          "Improve sports performance",
+          ...commonOptions
+        ];
+      case 'brain':
+        return [
+          "Improve focus",
+          "Enhance memory",
+          "Mental clarity",
+          "Mood enhancement",
+          "Cognitive longevity",
+          ...commonOptions
+        ];
+      case 'sleep':
+        return [
+          "Fall asleep faster",
+          "Stay asleep longer",
+          "Improve sleep quality",
+          "Reduce stress and anxiety",
+          "Establish better sleep routine",
+          ...commonOptions
+        ];
+      default:
+        return [
+          "Improve energy levels",
+          "Enhance immunity",
+          "Better sleep",
+          "Stress management",
+          "Weight management",
+          "Heart health",
+          "Brain function",
+          "Joint health",
+          "Digestive health",
+          "Anti-aging"
+        ];
+    }
+  };
 
   const dietaryPreferencesOptions = [
     "Omnivore",
@@ -101,18 +142,56 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
     "Mediterranean"
   ];
 
-  const healthConditionsOptions = [
-    "None",
-    "High blood pressure",
-    "High cholesterol",
-    "Diabetes",
-    "Thyroid issues",
-    "Digestive disorders",
-    "Arthritis",
-    "Anxiety/Depression",
-    "Insomnia",
-    "Autoimmune condition"
-  ];
+  // Customize health conditions based on assessment type
+  const getHealthConditionsOptions = () => {
+    const commonConditions = [
+      "None",
+      "High blood pressure",
+      "High cholesterol",
+      "Diabetes",
+      "Thyroid issues"
+    ];
+    
+    switch(assessmentType) {
+      case 'fitness':
+        return [
+          ...commonConditions,
+          "Joint pain/Arthritis",
+          "Muscle injuries",
+          "Exercise-induced asthma",
+          "Low testosterone"
+        ];
+      case 'brain':
+        return [
+          ...commonConditions,
+          "Anxiety/Depression",
+          "ADHD",
+          "Brain fog",
+          "Headaches/Migraines"
+        ];
+      case 'sleep':
+        return [
+          ...commonConditions,
+          "Insomnia",
+          "Sleep apnea",
+          "Restless leg syndrome",
+          "Anxiety/Depression"
+        ];
+      default:
+        return [
+          "None",
+          "High blood pressure",
+          "High cholesterol",
+          "Diabetes",
+          "Thyroid issues",
+          "Digestive disorders",
+          "Arthritis",
+          "Anxiety/Depression",
+          "Insomnia",
+          "Autoimmune condition"
+        ];
+    }
+  };
 
   const allergyOptions = [
     "None",
@@ -259,7 +338,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {healthGoalsOptions.map(goal => (
+              {getHealthGoalsOptions().map(goal => (
                 <label 
                   key={goal} 
                   className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -374,7 +453,7 @@ const QuestionnaireForm: React.FC<QuestionnaireFormProps> = ({ onComplete, onBac
             <div className="mb-8">
               <h3 className="text-lg font-medium mb-4">Do you have any of the following health conditions?</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {healthConditionsOptions.map(condition => (
+                {getHealthConditionsOptions().map(condition => (
                   <label 
                     key={condition} 
                     className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${

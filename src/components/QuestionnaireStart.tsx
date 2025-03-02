@@ -3,16 +3,27 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Button from './Button';
 import { useUser } from '../context/UserContext';
+import { useAuth } from '../context/AuthContext';
+
+interface AssessmentType {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  targetAudience: string;
+}
 
 interface QuestionnaireStartProps {
   onStart: () => void;
+  assessmentType?: AssessmentType;
 }
 
-const QuestionnaireStart: React.FC<QuestionnaireStartProps> = ({ onStart }) => {
+const QuestionnaireStart: React.FC<QuestionnaireStartProps> = ({ onStart, assessmentType }) => {
   const { userData } = useUser();
+  const { user } = useAuth();
   
   return (
-    <div className="container-custom py-16 max-w-3xl">
+    <div className="py-8 max-w-3xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -20,11 +31,17 @@ const QuestionnaireStart: React.FC<QuestionnaireStartProps> = ({ onStart }) => {
       >
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-display font-medium mb-4">
-            {userData.name ? `Welcome, ${userData.name}!` : 'Start Your Health Assessment'}
+            {assessmentType?.title || 'Start Your Health Assessment'}
           </h1>
           <p className="text-lg text-muted-foreground">
-            Answer a few questions about your health goals and needs to receive personalized supplement recommendations.
+            {assessmentType?.description || 'Answer a few questions about your health goals and needs to receive personalized supplement recommendations.'}
           </p>
+          
+          {user && (
+            <div className="mt-4 p-3 bg-green-50 text-green-800 rounded-lg inline-block">
+              <p className="text-sm">Signed in as {user.email}</p>
+            </div>
+          )}
         </div>
         
         <div className="space-y-6 mb-10">
@@ -55,6 +72,22 @@ const QuestionnaireStart: React.FC<QuestionnaireStartProps> = ({ onStart }) => {
               </p>
             </div>
           </div>
+          
+          {user && (
+            <div className="bg-blue-50 rounded-lg p-5 flex items-start gap-4">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-md font-medium mb-1">Your data is saved</h3>
+                <p className="text-sm text-blue-700">
+                  Since you're logged in, your assessment results will be saved to your account, allowing you to access your recommendations anytime.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="text-center">
