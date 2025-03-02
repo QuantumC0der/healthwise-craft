@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
@@ -25,7 +26,7 @@ const Index = () => {
 };
 
 const MainContent = () => {
-  const { userData, isLoading } = useUser();
+  const { userData, isLoading, fetchLatestAssessment } = useUser();
   const [currentView, setCurrentView] = useState<
     'home' | 'start' | 'questionnaire' | 'recommendations' | 'profile'
   >('home');
@@ -44,6 +45,7 @@ const MainContent = () => {
         setRecommendations(userRecs);
         
         if (currentView === 'home') {
+          // Stay on home if that's where we are
         } else {
           setCurrentView('recommendations');
         }
@@ -78,8 +80,11 @@ const MainContent = () => {
   };
   
   const handleRetakeQuestionnaire = () => {
-    setCurrentView('questionnaire');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Fetch the latest assessment data before starting a new one
+    fetchLatestAssessment().then(() => {
+      setCurrentView('questionnaire');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   };
   
   const scrollToAssessment = () => {

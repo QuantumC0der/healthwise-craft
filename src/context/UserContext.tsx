@@ -22,7 +22,7 @@ interface UserData extends HealthProfile {
 interface UserContextType {
   userData: UserData;
   isLoading: boolean;
-  updateUser: (data: Partial<UserData>) => void;
+  updateUser: (data: Partial<UserData>) => Promise<void>;
   resetUser: () => void;
   saveAssessment: (assessmentType: string, healthProfile: HealthProfile) => Promise<void>;
   fetchLatestAssessment: () => Promise<void>;
@@ -126,21 +126,40 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (Object.keys(profileData).length > 0) {
         try {
-          const { error } = await supabase
+          // Check if profile exists
+          const { data: existingProfile } = await supabase
             .from('profiles')
-            .update(profileData)
-            .eq('id', user.id);
+            .select('id')
+            .eq('id', user.id)
+            .maybeSingle();
 
-          if (error) {
-            console.error('Error updating profile:', error);
-            toast({
-              title: "Error",
-              description: "Failed to update your profile information.",
-              variant: "destructive"
-            });
+          if (existingProfile) {
+            // Update existing profile
+            const { error } = await supabase
+              .from('profiles')
+              .update(profileData)
+              .eq('id', user.id);
+
+            if (error) throw error;
+          } else {
+            // Insert new profile
+            const { error } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                ...profileData,
+                email: user.email
+              });
+
+            if (error) throw error;
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error updating profile:', error);
+          toast({
+            title: "Error",
+            description: "Failed to update your profile information.",
+            variant: "destructive"
+          });
         }
       }
     }
@@ -149,6 +168,28 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const saveAssessment = async (assessmentType: string, healthProfile: HealthProfile) => {
     try {
       if (user) {
+        // Check if profile exists first
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        // Create profile if it doesn't exist
+        if (!existingProfile) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email,
+              name: userData.name || '',
+              age: userData.age || null,
+              gender: userData.gender || ''
+            });
+
+          if (profileError) throw profileError;
+        }
+
         // Save assessment to database
         const { data, error } = await supabase
           .from('assessments')
@@ -162,9 +203,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           })
           .select();
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         setUserData((prev) => ({
           ...prev,

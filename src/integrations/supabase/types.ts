@@ -9,7 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      assessments: {
+        Row: {
+          allergies: string[] | null
+          assessment_type: string
+          created_at: string | null
+          dietary_preferences: string[] | null
+          health_conditions: string[] | null
+          health_goals: string[] | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          allergies?: string[] | null
+          assessment_type: string
+          created_at?: string | null
+          dietary_preferences?: string[] | null
+          health_conditions?: string[] | null
+          health_goals?: string[] | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          allergies?: string[] | null
+          assessment_type?: string
+          created_at?: string | null
+          dietary_preferences?: string[] | null
+          health_conditions?: string[] | null
+          health_goals?: string[] | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          created_at: string | null
+          email: string | null
+          gender: string | null
+          id: string
+          name: string | null
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string | null
+          email?: string | null
+          gender?: string | null
+          id: string
+          name?: string | null
+        }
+        Update: {
+          age?: number | null
+          created_at?: string | null
+          email?: string | null
+          gender?: string | null
+          id?: string
+          name?: string | null
+        }
+        Relationships: []
+      }
+      user_recommendations: {
+        Row: {
+          assessment_id: string
+          created_at: string | null
+          id: string
+          supplement_ids: string[] | null
+          user_id: string
+        }
+        Insert: {
+          assessment_id: string
+          created_at?: string | null
+          id?: string
+          supplement_ids?: string[] | null
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string
+          created_at?: string | null
+          id?: string
+          supplement_ids?: string[] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_recommendations_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
