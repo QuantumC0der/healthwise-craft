@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { useAuth } from './AuthContext';
@@ -24,7 +23,7 @@ interface UserContextType {
   isLoading: boolean;
   updateUser: (data: Partial<UserData>) => Promise<void>;
   resetUser: () => void;
-  saveAssessment: (assessmentType: string, healthProfile: HealthProfile) => Promise<void>;
+  saveAssessment: (assessmentType: string, healthProfile: HealthProfile) => Promise<string | null>;
   fetchLatestAssessment: () => Promise<void>;
   saveRecommendations: (supplementIds: string[], assessmentId: string) => Promise<void>;
 }
@@ -49,12 +48,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user } = useAuth();
 
   useEffect(() => {
-    // When auth state changes (login/logout), update user data
     const loadUser = async () => {
       setIsLoading(true);
       try {
         if (user) {
-          // Fetch user profile from database
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('*')
@@ -65,7 +62,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error('Error loading user profile:', profileError);
           }
 
-          // Fetch latest assessment if available
           const { data: assessment, error: assessmentError } = await supabase
             .from('assessments')
             .select('*')
@@ -77,7 +73,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error('Error loading assessment:', assessmentError);
           }
 
-          // Update user data
           setUserData({
             name: profile?.name || '',
             email: user.email || '',
@@ -90,7 +85,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             completedQuestionnaire: assessment && assessment.length > 0 ? true : false,
           });
         } else {
-          // User logged out, load from localStorage as fallback for guests
           const savedUserData = localStorage.getItem('userData');
           if (savedUserData) {
             setUserData(JSON.parse(savedUserData));
@@ -109,7 +103,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   useEffect(() => {
-    // Save user data to localStorage as fallback for guests
     if (!isLoading && !user) {
       localStorage.setItem('userData', JSON.stringify(userData));
     }
@@ -118,7 +111,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = async (data: Partial<UserData>) => {
     setUserData((prev) => ({ ...prev, ...data }));
 
-    // If authenticated, also update profile in database
     if (user && (data.name !== undefined || data.age !== undefined || data.gender !== undefined)) {
       const profileData: any = {};
       if (data.name !== undefined) profileData.name = data.name;
@@ -127,7 +119,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (Object.keys(profileData).length > 0) {
         try {
-          // Check if profile exists
           const { data: existingProfile } = await supabase
             .from('profiles')
             .select('id')
@@ -135,7 +126,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .maybeSingle();
 
           if (existingProfile) {
-            // Update existing profile
             const { error } = await supabase
               .from('profiles')
               .update(profileData)
@@ -143,7 +133,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             if (error) throw error;
           } else {
-            // Insert new profile
             const { error } = await supabase
               .from('profiles')
               .insert({
@@ -166,34 +155,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const saveAssessment = async (assessmentType: string, healthProfile: HealthProfile) => {
+  const saveAssessment = async (assessmentType: string, healthProfile: HealthProfile): Promise<string | null> => {
     try {
       let assessmentId: string | null = null;
       
       if (user) {
-        // Check if profile exists first
-        const { data: existingProfile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        // Create profile if it doesn't exist
-        if (!existingProfile) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert({
-              id: user.id,
-              email: user.email,
-              name: userData.name || '',
-              age: userData.age || null,
-              gender: userData.gender || ''
-            });
-
-          if (profileError) throw profileError;
-        }
-
-        // Save assessment to database
         const { data, error } = await supabase
           .from('assessments')
           .insert({
@@ -221,7 +187,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return assessmentId;
       }
 
-      // For guests, just update local state
       setUserData((prev) => ({
         ...prev,
         ...healthProfile,
@@ -241,7 +206,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   const saveRecommendations = async (supplementIds: string[], assessmentId: string) => {
-    if (!user) return; // Only save for authenticated users
+    if (!user) return;
     
     try {
       const { error } = await supabase
@@ -303,7 +268,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const resetUser = async () => {
     if (user) {
-      // For authenticated users, we don't delete their profile data
       setUserData({
         ...defaultUserData,
         name: userData.name,
@@ -312,7 +276,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         gender: userData.gender
       });
     } else {
-      // For guests, completely reset
       setUserData(defaultUserData);
       localStorage.removeItem('userData');
     }
