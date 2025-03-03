@@ -5,6 +5,7 @@ import App from './App.tsx'
 import './index.css'
 import './styles/globals.css'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
 
 // Create root element if it doesn't exist
 const rootElement = document.getElementById('root');
@@ -20,7 +21,9 @@ try {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <ErrorBoundary>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ErrorBoundary>
     </React.StrictMode>,
   );

@@ -4,51 +4,52 @@ import React from "react";
 
 /**
  * Handles errors throughout the application in a consistent way
- * @param error The error to handle
- * @param context Additional context about where the error occurred
  */
-export const handleError = (error: unknown, context?: string): void => {
-  const errorMessage = error instanceof Error 
-    ? error.message 
-    : "An unknown error occurred";
-  
-  // Log to console with context
+export function handleError(error: unknown, context?: string): void {
   console.error(`Error${context ? ` in ${context}` : ''}:`, error);
   
-  // Show toast notification
+  const errorMessage = error instanceof Error 
+    ? error.message 
+    : 'An unexpected error occurred';
+  
   toast({
-    title: "Something went wrong",
+    title: "Error",
     description: errorMessage,
     variant: "destructive",
   });
-};
-
-/**
- * Try-catch wrapper for async functions
- * @param fn The async function to execute
- * @param context Context information for error handling
- */
-export async function tryCatch<T>(
-  fn: () => Promise<T>, 
-  context?: string
-): Promise<T | null> {
-  try {
-    return await fn();
-  } catch (error) {
-    handleError(error, context);
-    return null;
-  }
 }
 
 /**
- * Creates a fallback component when image loading fails
- * @param text Text to display in the fallback
- * @returns JSX element for the fallback
+ * Formats error messages for display
  */
-export const createImageFallback = (text: string = "Image not available") => {
-  return (
-    <div className="w-full h-full min-h-[200px] bg-gray-100 rounded-md flex items-center justify-center">
-      <p className="text-gray-500">{text}</p>
-    </div>
-  );
-};
+export function formatErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  
+  if (typeof error === 'string') {
+    return error;
+  }
+  
+  return 'An unexpected error occurred';
+}
+
+/**
+ * Creates an error logger with a specific context
+ */
+export function createErrorLogger(context: string) {
+  return (error: unknown) => handleError(error, context);
+}
+
+/**
+ * Creates an image fallback component for when images fail to load
+ */
+export function createImageFallback(alt: string) {
+  return () => {
+    return (
+      <div className="bg-sage-100 rounded flex items-center justify-center h-full w-full">
+        <span className="text-sage-600 text-sm">{alt || 'Image unavailable'}</span>
+      </div>
+    );
+  };
+}
