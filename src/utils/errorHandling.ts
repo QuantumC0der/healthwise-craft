@@ -1,6 +1,6 @@
 
-import { toast } from "../hooks/use-toast";
-import React from "react";
+import React from 'react';
+import { toast } from "./sonner";
 
 /**
  * Handles errors throughout the application in a consistent way
