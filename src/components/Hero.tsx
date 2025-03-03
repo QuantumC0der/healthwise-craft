@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import Button from "./Button";
@@ -147,7 +148,7 @@ const Hero = () => {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <img
-                  src="https://via.placeholder.com/640x360"
+                  src="/placeholder.svg"
                   alt="Supplement health"
                   className="w-full h-auto rounded-2xl"
                 />
