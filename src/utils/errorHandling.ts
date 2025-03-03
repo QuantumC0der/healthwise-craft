@@ -1,5 +1,6 @@
 
 import { toast } from "../hooks/use-toast";
+import React from "react";
 
 /**
  * Handles errors throughout the application in a consistent way
