@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "./Button";
 
 const Hero = () => {
   console.log("Hero component rendering");
+  const [imageError, setImageError] = useState(false);
   
   const handleGetStarted = () => {
     const assessmentElement = document.getElementById("assessment-section");
@@ -149,15 +150,21 @@ const Hero = () => {
                 whileHover={{ rotate: -2 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <img
-                  src="/placeholder.svg"
-                  alt="Supplement health"
-                  className="w-full h-auto rounded-2xl"
-                  onError={(e) => {
-                    console.error("Image failed to load");
-                    e.currentTarget.src = "https://placehold.co/600x400/png?text=Supplement+Health";
-                  }}
-                />
+                {!imageError ? (
+                  <img
+                    src="/placeholder.svg"
+                    alt="Supplement health"
+                    className="w-full h-auto rounded-2xl"
+                    onError={(e) => {
+                      console.error("Image failed to load");
+                      setImageError(true);
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-64 bg-gray-200 rounded-2xl flex items-center justify-center">
+                    <p className="text-gray-500">Supplement Health Image</p>
+                  </div>
+                )}
 
                 <div className="p-6">
                   <h3 className="font-display text-2xl mb-2 text-primary">

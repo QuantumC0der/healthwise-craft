@@ -3,25 +3,29 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import HowItWorks from "./pages/HowItWorks";
-import SupplementScience from "./pages/SupplementScience";
-import AboutUs from "./pages/AboutUs";
-import OurTeam from "./pages/OurTeam";
-import JoinUs from "./pages/JoinUs";
-import SayHello from "./pages/SayHello";
-import News from "./pages/News";
-import Blog from "./pages/Blog";
-import CategoryPage from "./pages/CategoryPage";
-import SupplementDetail from "./pages/SupplementDetail";
-import Privacy from "./pages/Privacy";
-import Terms from "./pages/Terms";
-import Cookies from "./pages/Cookies";
+import { Suspense, lazy } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 
-// Create a new query client with error handling
+// Lazy load page components
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks"));
+const SupplementScience = lazy(() => import("./pages/SupplementScience"));
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const OurTeam = lazy(() => import("./pages/OurTeam"));
+const JoinUs = lazy(() => import("./pages/JoinUs"));
+const SayHello = lazy(() => import("./pages/SayHello"));
+const News = lazy(() => import("./pages/News"));
+const Blog = lazy(() => import("./pages/Blog"));
+const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const SupplementDetail = lazy(() => import("./pages/SupplementDetail"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Cookies = lazy(() => import("./pages/Cookies"));
+
+// Create a new query client with improved error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -54,23 +58,25 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/how-it-works" element={<HowItWorks />} />
-                <Route path="/supplement-science" element={<SupplementScience />} />
-                <Route path="/about-us" element={<AboutUs />} />
-                <Route path="/our-team" element={<OurTeam />} />
-                <Route path="/join-us" element={<JoinUs />} />
-                <Route path="/contact" element={<SayHello />} />
-                <Route path="/news" element={<News />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/category/:categoryId" element={<CategoryPage />} />
-                <Route path="/supplements/:supplementId" element={<SupplementDetail />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/cookies" element={<Cookies />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/how-it-works" element={<HowItWorks />} />
+                  <Route path="/supplement-science" element={<SupplementScience />} />
+                  <Route path="/about-us" element={<AboutUs />} />
+                  <Route path="/our-team" element={<OurTeam />} />
+                  <Route path="/join-us" element={<JoinUs />} />
+                  <Route path="/contact" element={<SayHello />} />
+                  <Route path="/news" element={<News />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/category/:categoryId" element={<CategoryPage />} />
+                  <Route path="/supplements/:supplementId" element={<SupplementDetail />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/cookies" element={<Cookies />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </BrowserRouter>
           </TooltipProvider>
         </UserProvider>
