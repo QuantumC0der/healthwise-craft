@@ -21,38 +21,58 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
 
-const queryClient = new QueryClient();
+// Create a new query client with error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      onError: (error) => {
+        console.error("Query error:", error);
+      }
+    },
+    mutations: {
+      onError: (error) => {
+        console.error("Mutation error:", error);
+      }
+    }
+  }
+});
 
-const App = () => (
-  <div className="font-body">
-    <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/supplement-science" element={<SupplementScience />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/our-team" element={<OurTeam />} />
-              <Route path="/join-us" element={<JoinUs />} />
-              <Route path="/contact" element={<SayHello />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/category/:categoryId" element={<CategoryPage />} />
-              <Route path="/supplements/:supplementId" element={<SupplementDetail />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/cookies" element={<Cookies />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </UserProvider>
-    </QueryClientProvider>
-  </div>
-);
+const App = () => {
+  console.log("App component rendering");
+  
+  return (
+    <div className="font-body">
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/supplement-science" element={<SupplementScience />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/our-team" element={<OurTeam />} />
+                <Route path="/join-us" element={<JoinUs />} />
+                <Route path="/contact" element={<SayHello />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/category/:categoryId" element={<CategoryPage />} />
+                <Route path="/supplements/:supplementId" element={<SupplementDetail />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/cookies" element={<Cookies />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </UserProvider>
+      </QueryClientProvider>
+    </div>
+  );
+};
 
 export default App;

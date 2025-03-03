@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Button from "./Button";
 
 const Hero = () => {
+  console.log("Hero component rendering");
+  
   const handleGetStarted = () => {
     const assessmentElement = document.getElementById("assessment-section");
     if (assessmentElement) {
@@ -151,6 +153,10 @@ const Hero = () => {
                   src="/placeholder.svg"
                   alt="Supplement health"
                   className="w-full h-auto rounded-2xl"
+                  onError={(e) => {
+                    console.error("Image failed to load");
+                    e.currentTarget.src = "https://placehold.co/600x400/png?text=Supplement+Health";
+                  }}
                 />
 
                 <div className="p-6">

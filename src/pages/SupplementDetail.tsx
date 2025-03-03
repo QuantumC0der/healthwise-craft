@@ -9,23 +9,40 @@ import supplements from "../data/supplements";
 import { toast } from "@/components/ui/use-toast";
 
 const SupplementDetail = () => {
+  console.log("SupplementDetail rendering");
   const { supplementId } = useParams();
   const [supplement, setSupplement] = useState(null);
   const [relatedSupplements, setRelatedSupplements] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   useEffect(() => {
-    // Find the current supplement
-    const currentSupplement = supplements.find(s => s.id === supplementId);
-    
-    if (currentSupplement) {
-      setSupplement(currentSupplement);
+    try {
+      console.log("SupplementDetail useEffect with ID:", supplementId);
+      setIsLoading(true);
       
-      // Find related supplements in the same category
-      const related = supplements
-        .filter(s => s.category === currentSupplement.category && s.id !== currentSupplement.id)
-        .slice(0, 3);
+      // Find the current supplement
+      const currentSupplement = supplements.find(s => s.id === supplementId);
       
-      setRelatedSupplements(related);
+      if (currentSupplement) {
+        console.log("Found supplement:", currentSupplement.name);
+        setSupplement(currentSupplement);
+        
+        // Find related supplements in the same category
+        const related = supplements
+          .filter(s => s.category === currentSupplement.category && s.id !== currentSupplement.id)
+          .slice(0, 3);
+        
+        setRelatedSupplements(related);
+      } else {
+        console.warn("Supplement not found with ID:", supplementId);
+        setError("Supplement not found");
+      }
+    } catch (err) {
+      console.error("Error in supplement detail:", err);
+      setError("Error loading supplement");
+    } finally {
+      setIsLoading(false);
     }
   }, [supplementId]);
 
@@ -62,7 +79,19 @@ const SupplementDetail = () => {
     });
   };
 
-  if (!supplement) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow pt-28 pb-16 flex items-center justify-center">
+          <div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full"></div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !supplement) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
